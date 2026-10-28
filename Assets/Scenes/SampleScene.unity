@@ -279,8 +279,18 @@ MonoBehaviour:
   walkSpeed: 2.2
   acceleration: 7
   deceleration: 12
-  minStandoff: 0.45
+  closestStandoff: -0.7
   maxRetreat: 4
+  maxStrafe: 3
+  maxVertical: 1.2
+  turnSpeed: 90
+  turnAcceleration: 360
+  focusHeightFraction: 0.45
+  focusWidthFraction: 0.4
+  focusScreenX: 0.33
+  focusTransitionTime: 0.45
+  focusMinDistance: 0.12
+  focusMaxDistance: 1.2
   showHints: 1
 --- !u!1 &410087039
 GameObject:
@@ -409,6 +419,11 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!4 &752570266 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1958885881095954987, guid: efeac76ffc7c3c1448956e4c6dba4d85, type: 3}
+  m_PrefabInstance: {fileID: 1635254357}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,13 +528,56 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4475607083571708058, guid: efeac76ffc7c3c1448956e4c6dba4d85, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1797786652}
   m_SourcePrefab: {fileID: 100100000, guid: efeac76ffc7c3c1448956e4c6dba4d85, type: 3}
 --- !u!4 &1635254358 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3843642248075139616, guid: efeac76ffc7c3c1448956e4c6dba4d85, type: 3}
   m_PrefabInstance: {fileID: 1635254357}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1797786651 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4475607083571708058, guid: efeac76ffc7c3c1448956e4c6dba4d85, type: 3}
+  m_PrefabInstance: {fileID: 1635254357}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1797786652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797786651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d072e32a65ae074a9aab0ad03829fb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PalletInstallEffect
+  tableRoot: {fileID: 752570266}
+  tablePath: "A\u8F74/C\u8F74"
+  machineRootName: "\u4E94\u8F74\u673A\u5E8A"
+  palletLengthMm: 320
+  palletWidthMm: 320
+  palletThicknessMm: 55
+  autoClampToTable: 1
+  seatClearanceMm: 1.5
+  startHeightMm: 250
+  approachDuration: 1.8
+  settleDuration: 0.45
+  settleDepthMm: 4
+  startYawDegrees: -32
+  autoPlayOnStart: 1
+  runTableAfterInstall: 1
+  tableDegreesPerSecond: 40
+  tableRunSeconds: 8
+  loop: 0
+  loopHoldSeconds: 1.2
+  palletColor: {r: 0.76, g: 0.77, b: 0.81, a: 1}
+  padColor: {r: 0.28, g: 0.3, b: 0.34, a: 1}
+  addCollider: 0
+  logSeatProbe: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
