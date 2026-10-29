@@ -20,7 +20,7 @@ public static class RobotArmSetup
     const float GapFromMachine = 0.45f;
 
     static string ProjectRoot => Directory.GetParent(Application.dataPath).FullName;
-    static string MarkerPath => Path.Combine(ProjectRoot, "Library", "RobotArmSetup.done");
+    static string MarkerPath => Path.Combine(ProjectRoot, "Library", "RobotArmSetup.v2.done");
 
     static RobotArmSetup()
     {
@@ -124,6 +124,17 @@ public static class RobotArmSetup
                 $"{DateTime.Now:O}\nplace={instance.transform.position}\nsize={placedBounds.size}\n");
 
             RenderPreview();
+
+            // 把 Scene 视角框到“机床 + 机械臂”，避免还停在丢失预制体的位置上。
+            var sceneView = SceneView.lastActiveSceneView;
+            if (sceneView != null)
+            {
+                Bounds combined = machineBounds;
+                combined.Encapsulate(placedBounds);
+                sceneView.LookAt(combined.center, Quaternion.Euler(20f, -35f, 0f),
+                    Mathf.Max(2f, combined.size.magnitude * 1.15f));
+                sceneView.Repaint();
+            }
         }
         catch (Exception e)
         {
