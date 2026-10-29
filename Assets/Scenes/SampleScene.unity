@@ -119,6 +119,65 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &69599706
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 69599708}
+  - component: {fileID: 69599707}
+  m_Layer: 0
+  m_Name: PlatformRig
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &69599707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69599706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b86bb195daf8144ab80be0962a7c80d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlatformController
+  targets:
+  - {fileID: 235920629}
+  maxX: 0.12
+  maxY: 0.12
+  maxZ: 0.12
+  speed: 0.06
+  acceleration: 0.25
+  panelTitle: "\u5DE5\u4F5C\u53F0\u8FD0\u52A8\u53C2\u6570"
+  clickPadding: 0.03
+  autoDemo: 0
+--- !u!4 &69599708
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69599706}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.27894, y: -0, z: 2.56145}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &235920629 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1958885881499577657, guid: efeac76ffc7c3c1448956e4c6dba4d85, type: 3}
+  m_PrefabInstance: {fileID: 1635254357}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,8 +338,18 @@ MonoBehaviour:
   walkSpeed: 2.2
   acceleration: 7
   deceleration: 12
-  minStandoff: 0.45
+  closestStandoff: -0.7
   maxRetreat: 4
+  maxStrafe: 3
+  maxVertical: 1.2
+  turnSpeed: 90
+  turnAcceleration: 360
+  focusHeightFraction: 0.45
+  focusWidthFraction: 0.4
+  focusScreenX: 0.33
+  focusTransitionTime: 0.45
+  focusMinDistance: 0.12
+  focusMaxDistance: 1.2
   showHints: 1
 --- !u!1 &410087039
 GameObject:
@@ -528,3 +597,4 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 1635254357}
+  - {fileID: 69599708}
