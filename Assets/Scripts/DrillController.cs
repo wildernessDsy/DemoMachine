@@ -39,6 +39,7 @@ public sealed class DrillController : MonoBehaviour
     GUIStyle _valueStyle;
     GUIStyle _labelStyle;
     GUIStyle _smallStyle;
+    GUIStyle _smallRightStyle;
     GUIStyle _closeStyle;
     Texture2D _panelTexture;
 
@@ -189,8 +190,8 @@ public sealed class DrillController : MonoBehaviour
         if (Mathf.Abs(value - _rpm) > 0.0001f)
             _rpm = Mathf.Clamp(value, minRpm, maxRpm);
 
-        GUI.Label(new Rect(left, sliderY + 22f, 120f, 20f), $"{minRpm:F0} RPM", _smallStyle);
-        GUI.Label(new Rect(panel.xMax - 138f, sliderY + 22f, 120f, 20f), $"{maxRpm:F0} RPM", _smallStyle);
+        GUI.Label(new Rect(left, sliderY + 22f, contentWidth, 20f), $"{minRpm:F0} RPM", _smallStyle);
+        GUI.Label(new Rect(left, sliderY + 22f, contentWidth, 20f), $"{maxRpm:F0} RPM", _smallRightStyle);
     }
 
     void EnsureStyles()
@@ -231,7 +232,13 @@ public sealed class DrillController : MonoBehaviour
         _smallStyle = new GUIStyle(GUI.skin.label)
         {
             fontSize = 12,
+            alignment = TextAnchor.MiddleLeft,
             normal = { textColor = new Color(0.65f, 0.7f, 0.78f) }
+        };
+
+        _smallRightStyle = new GUIStyle(_smallStyle)
+        {
+            alignment = TextAnchor.MiddleRight
         };
 
         _closeStyle = new GUIStyle(GUI.skin.button)
@@ -247,6 +254,7 @@ public sealed class DrillController : MonoBehaviour
             _valueStyle.font = font;
             _labelStyle.font = font;
             _smallStyle.font = font;
+            _smallRightStyle.font = font;
             _closeStyle.font = font;
         }
     }
