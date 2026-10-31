@@ -152,6 +152,16 @@ public sealed class DrillController : MonoBehaviour
             _machineView.ClearFocus();
     }
 
+    /// <summary>当前转速面板是否打开。</summary>
+    public bool IsPanelOpen => _panelOpen;
+
+    /// <summary>供其它演示脚本调用：关闭转速面板（例如点主轴弹出另一个面板时）。</summary>
+    public void ClosePanel()
+    {
+        if (_panelOpen)
+            SetPanelOpen(false);
+    }
+
     Rect GetPanelRect()
     {
         float width = Mathf.Clamp(Screen.width * 0.38f, 300f, PanelWidth);
