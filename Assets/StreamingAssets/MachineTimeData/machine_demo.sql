@@ -1,0 +1,107 @@
+CREATE TABLE IF NOT EXISTS machine_parameter_slots (
+  slot_index INTEGER PRIMARY KEY,
+  time_slot TEXT NOT NULL UNIQUE,
+  minutes_since_midnight INTEGER NOT NULL UNIQUE,
+  worktable_speed_mms REAL NOT NULL,
+  spindle_reciprocating_speed_mms REAL NOT NULL,
+  drill_rpm REAL NOT NULL,
+  machine_state TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+
+INSERT INTO machine_parameter_slots VALUES (0, '00:00', 0, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (1, '00:15', 15, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (2, '00:30', 30, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (3, '00:45', 45, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (4, '01:00', 60, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (5, '01:15', 75, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (6, '01:30', 90, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (7, '01:45', 105, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (8, '02:00', 120, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (9, '02:15', 135, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (10, '02:30', 150, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (11, '02:45', 165, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (12, '03:00', 180, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (13, '03:15', 195, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (14, '03:30', 210, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (15, '03:45', 225, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (16, '04:00', 240, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (17, '04:15', 255, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (18, '04:30', 270, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (19, '04:45', 285, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (20, '05:00', 300, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (21, '05:15', 315, 5.0, 10.0, 0.0, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (22, '05:30', 330, 26.9, 68.8, 21.2, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (23, '05:45', 345, 48.8, 127.5, 42.5, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (24, '06:00', 360, 70.6, 186.2, 63.8, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (25, '06:15', 375, 92.5, 245.0, 85.0, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (26, '06:30', 390, 114.4, 303.8, 106.2, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (27, '06:45', 405, 136.2, 362.5, 127.5, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (28, '07:00', 420, 158.1, 421.2, 148.8, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (29, '07:15', 435, 180.0, 480.0, 170.0, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (30, '07:30', 450, 180.0, 480.0, 170.0, 'running');
+INSERT INTO machine_parameter_slots VALUES (31, '07:45', 465, 183.4, 489.1, 173.4, 'running');
+INSERT INTO machine_parameter_slots VALUES (32, '08:00', 480, 186.5, 497.7, 176.5, 'running');
+INSERT INTO machine_parameter_slots VALUES (33, '08:15', 495, 189.3, 505.2, 179.3, 'running');
+INSERT INTO machine_parameter_slots VALUES (34, '08:30', 510, 191.5, 511.3, 181.5, 'running');
+INSERT INTO machine_parameter_slots VALUES (35, '08:45', 525, 193.1, 515.5, 183.1, 'running');
+INSERT INTO machine_parameter_slots VALUES (36, '09:00', 540, 193.9, 517.7, 183.9, 'running');
+INSERT INTO machine_parameter_slots VALUES (37, '09:15', 555, 193.9, 517.7, 183.9, 'running');
+INSERT INTO machine_parameter_slots VALUES (38, '09:30', 570, 193.1, 515.5, 183.1, 'running');
+INSERT INTO machine_parameter_slots VALUES (39, '09:45', 585, 191.5, 511.3, 181.5, 'running');
+INSERT INTO machine_parameter_slots VALUES (40, '10:00', 600, 189.3, 505.2, 179.3, 'running');
+INSERT INTO machine_parameter_slots VALUES (41, '10:15', 615, 186.5, 497.7, 176.5, 'running');
+INSERT INTO machine_parameter_slots VALUES (42, '10:30', 630, 183.4, 489.1, 173.4, 'running');
+INSERT INTO machine_parameter_slots VALUES (43, '10:45', 645, 180.0, 480.0, 170.0, 'running');
+INSERT INTO machine_parameter_slots VALUES (44, '11:00', 660, 180.0, 480.0, 170.0, 'paused');
+INSERT INTO machine_parameter_slots VALUES (45, '11:15', 675, 155.0, 420.0, 145.7, 'paused');
+INSERT INTO machine_parameter_slots VALUES (46, '11:30', 690, 130.0, 360.0, 121.4, 'paused');
+INSERT INTO machine_parameter_slots VALUES (47, '11:45', 705, 105.0, 300.0, 97.1, 'paused');
+INSERT INTO machine_parameter_slots VALUES (48, '12:00', 720, 80.0, 240.0, 72.9, 'paused');
+INSERT INTO machine_parameter_slots VALUES (49, '12:15', 735, 55.0, 180.0, 48.6, 'paused');
+INSERT INTO machine_parameter_slots VALUES (50, '12:30', 750, 30.0, 120.0, 24.3, 'paused');
+INSERT INTO machine_parameter_slots VALUES (51, '12:45', 765, 5.0, 60.0, 0.0, 'paused');
+INSERT INTO machine_parameter_slots VALUES (52, '13:00', 780, 5.0, 10.0, 0.0, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (53, '13:15', 795, 30.0, 70.0, 24.3, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (54, '13:30', 810, 55.0, 130.0, 48.6, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (55, '13:45', 825, 80.0, 190.0, 72.9, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (56, '14:00', 840, 105.0, 250.0, 97.1, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (57, '14:15', 855, 130.0, 310.0, 121.4, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (58, '14:30', 870, 155.0, 370.0, 145.7, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (59, '14:45', 885, 180.0, 430.0, 170.0, 'warmup');
+INSERT INTO machine_parameter_slots VALUES (60, '15:00', 900, 180.0, 480.0, 170.0, 'running');
+INSERT INTO machine_parameter_slots VALUES (61, '15:15', 915, 177.2, 470.4, 166.6, 'running');
+INSERT INTO machine_parameter_slots VALUES (62, '15:30', 930, 174.6, 461.6, 163.5, 'running');
+INSERT INTO machine_parameter_slots VALUES (63, '15:45', 945, 172.4, 454.3, 160.9, 'running');
+INSERT INTO machine_parameter_slots VALUES (64, '16:00', 960, 170.9, 449.1, 159.1, 'running');
+INSERT INTO machine_parameter_slots VALUES (65, '16:15', 975, 170.1, 446.3, 158.1, 'running');
+INSERT INTO machine_parameter_slots VALUES (66, '16:30', 990, 170.1, 446.3, 158.1, 'running');
+INSERT INTO machine_parameter_slots VALUES (67, '16:45', 1005, 170.9, 449.1, 159.1, 'running');
+INSERT INTO machine_parameter_slots VALUES (68, '17:00', 1020, 172.4, 454.3, 160.9, 'running');
+INSERT INTO machine_parameter_slots VALUES (69, '17:15', 1035, 174.6, 461.6, 163.5, 'running');
+INSERT INTO machine_parameter_slots VALUES (70, '17:30', 1050, 177.2, 470.4, 166.6, 'running');
+INSERT INTO machine_parameter_slots VALUES (71, '17:45', 1065, 180.0, 480.0, 170.0, 'running');
+INSERT INTO machine_parameter_slots VALUES (72, '18:00', 1080, 180.0, 480.0, 170.0, 'paused');
+INSERT INTO machine_parameter_slots VALUES (73, '18:15', 1095, 155.0, 420.0, 145.7, 'paused');
+INSERT INTO machine_parameter_slots VALUES (74, '18:30', 1110, 130.0, 360.0, 121.4, 'paused');
+INSERT INTO machine_parameter_slots VALUES (75, '18:45', 1125, 105.0, 300.0, 97.1, 'paused');
+INSERT INTO machine_parameter_slots VALUES (76, '19:00', 1140, 80.0, 240.0, 72.9, 'paused');
+INSERT INTO machine_parameter_slots VALUES (77, '19:15', 1155, 55.0, 180.0, 48.6, 'paused');
+INSERT INTO machine_parameter_slots VALUES (78, '19:30', 1170, 30.0, 120.0, 24.3, 'paused');
+INSERT INTO machine_parameter_slots VALUES (79, '19:45', 1185, 5.0, 60.0, 0.0, 'paused');
+INSERT INTO machine_parameter_slots VALUES (80, '20:00', 1200, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (81, '20:15', 1215, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (82, '20:30', 1230, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (83, '20:45', 1245, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (84, '21:00', 1260, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (85, '21:15', 1275, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (86, '21:30', 1290, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (87, '21:45', 1305, 5.0, 10.0, 0.0, 'idle');
+INSERT INTO machine_parameter_slots VALUES (88, '22:00', 1320, 5.0, 10.0, 0.0, 'maintenance');
+INSERT INTO machine_parameter_slots VALUES (89, '22:15', 1335, 5.0, 10.0, 0.0, 'maintenance');
+INSERT INTO machine_parameter_slots VALUES (90, '22:30', 1350, 5.0, 10.0, 0.0, 'maintenance');
+INSERT INTO machine_parameter_slots VALUES (91, '22:45', 1365, 5.0, 10.0, 0.0, 'maintenance');
+INSERT INTO machine_parameter_slots VALUES (92, '23:00', 1380, 5.0, 10.0, 0.0, 'maintenance');
+INSERT INTO machine_parameter_slots VALUES (93, '23:15', 1395, 5.0, 10.0, 0.0, 'maintenance');
+INSERT INTO machine_parameter_slots VALUES (94, '23:30', 1410, 5.0, 10.0, 0.0, 'maintenance');
+INSERT INTO machine_parameter_slots VALUES (95, '23:45', 1425, 5.0, 10.0, 0.0, 'maintenance');

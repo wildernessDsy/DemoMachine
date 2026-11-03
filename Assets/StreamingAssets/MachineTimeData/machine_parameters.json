@@ -1,0 +1,876 @@
+{
+  "schema_version": 1,
+  "slot_minutes": 15,
+  "slots_per_day": 96,
+  "units": {
+    "worktable_speed_mms": "mm/s",
+    "spindle_reciprocating_speed_mms": "mm/s",
+    "drill_rpm": "RPM"
+  },
+  "rows": [
+    {
+      "slot_index": 0,
+      "time_slot": "00:00",
+      "minutes_since_midnight": 0,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 1,
+      "time_slot": "00:15",
+      "minutes_since_midnight": 15,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 2,
+      "time_slot": "00:30",
+      "minutes_since_midnight": 30,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 3,
+      "time_slot": "00:45",
+      "minutes_since_midnight": 45,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 4,
+      "time_slot": "01:00",
+      "minutes_since_midnight": 60,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 5,
+      "time_slot": "01:15",
+      "minutes_since_midnight": 75,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 6,
+      "time_slot": "01:30",
+      "minutes_since_midnight": 90,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 7,
+      "time_slot": "01:45",
+      "minutes_since_midnight": 105,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 8,
+      "time_slot": "02:00",
+      "minutes_since_midnight": 120,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 9,
+      "time_slot": "02:15",
+      "minutes_since_midnight": 135,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 10,
+      "time_slot": "02:30",
+      "minutes_since_midnight": 150,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 11,
+      "time_slot": "02:45",
+      "minutes_since_midnight": 165,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 12,
+      "time_slot": "03:00",
+      "minutes_since_midnight": 180,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 13,
+      "time_slot": "03:15",
+      "minutes_since_midnight": 195,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 14,
+      "time_slot": "03:30",
+      "minutes_since_midnight": 210,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 15,
+      "time_slot": "03:45",
+      "minutes_since_midnight": 225,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 16,
+      "time_slot": "04:00",
+      "minutes_since_midnight": 240,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 17,
+      "time_slot": "04:15",
+      "minutes_since_midnight": 255,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 18,
+      "time_slot": "04:30",
+      "minutes_since_midnight": 270,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 19,
+      "time_slot": "04:45",
+      "minutes_since_midnight": 285,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 20,
+      "time_slot": "05:00",
+      "minutes_since_midnight": 300,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 21,
+      "time_slot": "05:15",
+      "minutes_since_midnight": 315,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 22,
+      "time_slot": "05:30",
+      "minutes_since_midnight": 330,
+      "worktable_speed_mms": 26.9,
+      "spindle_reciprocating_speed_mms": 68.8,
+      "drill_rpm": 21.2,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 23,
+      "time_slot": "05:45",
+      "minutes_since_midnight": 345,
+      "worktable_speed_mms": 48.8,
+      "spindle_reciprocating_speed_mms": 127.5,
+      "drill_rpm": 42.5,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 24,
+      "time_slot": "06:00",
+      "minutes_since_midnight": 360,
+      "worktable_speed_mms": 70.6,
+      "spindle_reciprocating_speed_mms": 186.2,
+      "drill_rpm": 63.8,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 25,
+      "time_slot": "06:15",
+      "minutes_since_midnight": 375,
+      "worktable_speed_mms": 92.5,
+      "spindle_reciprocating_speed_mms": 245.0,
+      "drill_rpm": 85.0,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 26,
+      "time_slot": "06:30",
+      "minutes_since_midnight": 390,
+      "worktable_speed_mms": 114.4,
+      "spindle_reciprocating_speed_mms": 303.8,
+      "drill_rpm": 106.2,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 27,
+      "time_slot": "06:45",
+      "minutes_since_midnight": 405,
+      "worktable_speed_mms": 136.2,
+      "spindle_reciprocating_speed_mms": 362.5,
+      "drill_rpm": 127.5,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 28,
+      "time_slot": "07:00",
+      "minutes_since_midnight": 420,
+      "worktable_speed_mms": 158.1,
+      "spindle_reciprocating_speed_mms": 421.2,
+      "drill_rpm": 148.8,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 29,
+      "time_slot": "07:15",
+      "minutes_since_midnight": 435,
+      "worktable_speed_mms": 180.0,
+      "spindle_reciprocating_speed_mms": 480.0,
+      "drill_rpm": 170.0,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 30,
+      "time_slot": "07:30",
+      "minutes_since_midnight": 450,
+      "worktable_speed_mms": 180.0,
+      "spindle_reciprocating_speed_mms": 480.0,
+      "drill_rpm": 170.0,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 31,
+      "time_slot": "07:45",
+      "minutes_since_midnight": 465,
+      "worktable_speed_mms": 183.4,
+      "spindle_reciprocating_speed_mms": 489.1,
+      "drill_rpm": 173.4,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 32,
+      "time_slot": "08:00",
+      "minutes_since_midnight": 480,
+      "worktable_speed_mms": 186.5,
+      "spindle_reciprocating_speed_mms": 497.7,
+      "drill_rpm": 176.5,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 33,
+      "time_slot": "08:15",
+      "minutes_since_midnight": 495,
+      "worktable_speed_mms": 189.3,
+      "spindle_reciprocating_speed_mms": 505.2,
+      "drill_rpm": 179.3,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 34,
+      "time_slot": "08:30",
+      "minutes_since_midnight": 510,
+      "worktable_speed_mms": 191.5,
+      "spindle_reciprocating_speed_mms": 511.3,
+      "drill_rpm": 181.5,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 35,
+      "time_slot": "08:45",
+      "minutes_since_midnight": 525,
+      "worktable_speed_mms": 193.1,
+      "spindle_reciprocating_speed_mms": 515.5,
+      "drill_rpm": 183.1,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 36,
+      "time_slot": "09:00",
+      "minutes_since_midnight": 540,
+      "worktable_speed_mms": 193.9,
+      "spindle_reciprocating_speed_mms": 517.7,
+      "drill_rpm": 183.9,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 37,
+      "time_slot": "09:15",
+      "minutes_since_midnight": 555,
+      "worktable_speed_mms": 193.9,
+      "spindle_reciprocating_speed_mms": 517.7,
+      "drill_rpm": 183.9,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 38,
+      "time_slot": "09:30",
+      "minutes_since_midnight": 570,
+      "worktable_speed_mms": 193.1,
+      "spindle_reciprocating_speed_mms": 515.5,
+      "drill_rpm": 183.1,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 39,
+      "time_slot": "09:45",
+      "minutes_since_midnight": 585,
+      "worktable_speed_mms": 191.5,
+      "spindle_reciprocating_speed_mms": 511.3,
+      "drill_rpm": 181.5,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 40,
+      "time_slot": "10:00",
+      "minutes_since_midnight": 600,
+      "worktable_speed_mms": 189.3,
+      "spindle_reciprocating_speed_mms": 505.2,
+      "drill_rpm": 179.3,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 41,
+      "time_slot": "10:15",
+      "minutes_since_midnight": 615,
+      "worktable_speed_mms": 186.5,
+      "spindle_reciprocating_speed_mms": 497.7,
+      "drill_rpm": 176.5,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 42,
+      "time_slot": "10:30",
+      "minutes_since_midnight": 630,
+      "worktable_speed_mms": 183.4,
+      "spindle_reciprocating_speed_mms": 489.1,
+      "drill_rpm": 173.4,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 43,
+      "time_slot": "10:45",
+      "minutes_since_midnight": 645,
+      "worktable_speed_mms": 180.0,
+      "spindle_reciprocating_speed_mms": 480.0,
+      "drill_rpm": 170.0,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 44,
+      "time_slot": "11:00",
+      "minutes_since_midnight": 660,
+      "worktable_speed_mms": 180.0,
+      "spindle_reciprocating_speed_mms": 480.0,
+      "drill_rpm": 170.0,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 45,
+      "time_slot": "11:15",
+      "minutes_since_midnight": 675,
+      "worktable_speed_mms": 155.0,
+      "spindle_reciprocating_speed_mms": 420.0,
+      "drill_rpm": 145.7,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 46,
+      "time_slot": "11:30",
+      "minutes_since_midnight": 690,
+      "worktable_speed_mms": 130.0,
+      "spindle_reciprocating_speed_mms": 360.0,
+      "drill_rpm": 121.4,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 47,
+      "time_slot": "11:45",
+      "minutes_since_midnight": 705,
+      "worktable_speed_mms": 105.0,
+      "spindle_reciprocating_speed_mms": 300.0,
+      "drill_rpm": 97.1,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 48,
+      "time_slot": "12:00",
+      "minutes_since_midnight": 720,
+      "worktable_speed_mms": 80.0,
+      "spindle_reciprocating_speed_mms": 240.0,
+      "drill_rpm": 72.9,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 49,
+      "time_slot": "12:15",
+      "minutes_since_midnight": 735,
+      "worktable_speed_mms": 55.0,
+      "spindle_reciprocating_speed_mms": 180.0,
+      "drill_rpm": 48.6,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 50,
+      "time_slot": "12:30",
+      "minutes_since_midnight": 750,
+      "worktable_speed_mms": 30.0,
+      "spindle_reciprocating_speed_mms": 120.0,
+      "drill_rpm": 24.3,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 51,
+      "time_slot": "12:45",
+      "minutes_since_midnight": 765,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 60.0,
+      "drill_rpm": 0.0,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 52,
+      "time_slot": "13:00",
+      "minutes_since_midnight": 780,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 53,
+      "time_slot": "13:15",
+      "minutes_since_midnight": 795,
+      "worktable_speed_mms": 30.0,
+      "spindle_reciprocating_speed_mms": 70.0,
+      "drill_rpm": 24.3,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 54,
+      "time_slot": "13:30",
+      "minutes_since_midnight": 810,
+      "worktable_speed_mms": 55.0,
+      "spindle_reciprocating_speed_mms": 130.0,
+      "drill_rpm": 48.6,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 55,
+      "time_slot": "13:45",
+      "minutes_since_midnight": 825,
+      "worktable_speed_mms": 80.0,
+      "spindle_reciprocating_speed_mms": 190.0,
+      "drill_rpm": 72.9,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 56,
+      "time_slot": "14:00",
+      "minutes_since_midnight": 840,
+      "worktable_speed_mms": 105.0,
+      "spindle_reciprocating_speed_mms": 250.0,
+      "drill_rpm": 97.1,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 57,
+      "time_slot": "14:15",
+      "minutes_since_midnight": 855,
+      "worktable_speed_mms": 130.0,
+      "spindle_reciprocating_speed_mms": 310.0,
+      "drill_rpm": 121.4,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 58,
+      "time_slot": "14:30",
+      "minutes_since_midnight": 870,
+      "worktable_speed_mms": 155.0,
+      "spindle_reciprocating_speed_mms": 370.0,
+      "drill_rpm": 145.7,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 59,
+      "time_slot": "14:45",
+      "minutes_since_midnight": 885,
+      "worktable_speed_mms": 180.0,
+      "spindle_reciprocating_speed_mms": 430.0,
+      "drill_rpm": 170.0,
+      "machine_state": "warmup"
+    },
+    {
+      "slot_index": 60,
+      "time_slot": "15:00",
+      "minutes_since_midnight": 900,
+      "worktable_speed_mms": 180.0,
+      "spindle_reciprocating_speed_mms": 480.0,
+      "drill_rpm": 170.0,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 61,
+      "time_slot": "15:15",
+      "minutes_since_midnight": 915,
+      "worktable_speed_mms": 177.2,
+      "spindle_reciprocating_speed_mms": 470.4,
+      "drill_rpm": 166.6,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 62,
+      "time_slot": "15:30",
+      "minutes_since_midnight": 930,
+      "worktable_speed_mms": 174.6,
+      "spindle_reciprocating_speed_mms": 461.6,
+      "drill_rpm": 163.5,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 63,
+      "time_slot": "15:45",
+      "minutes_since_midnight": 945,
+      "worktable_speed_mms": 172.4,
+      "spindle_reciprocating_speed_mms": 454.3,
+      "drill_rpm": 160.9,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 64,
+      "time_slot": "16:00",
+      "minutes_since_midnight": 960,
+      "worktable_speed_mms": 170.9,
+      "spindle_reciprocating_speed_mms": 449.1,
+      "drill_rpm": 159.1,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 65,
+      "time_slot": "16:15",
+      "minutes_since_midnight": 975,
+      "worktable_speed_mms": 170.1,
+      "spindle_reciprocating_speed_mms": 446.3,
+      "drill_rpm": 158.1,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 66,
+      "time_slot": "16:30",
+      "minutes_since_midnight": 990,
+      "worktable_speed_mms": 170.1,
+      "spindle_reciprocating_speed_mms": 446.3,
+      "drill_rpm": 158.1,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 67,
+      "time_slot": "16:45",
+      "minutes_since_midnight": 1005,
+      "worktable_speed_mms": 170.9,
+      "spindle_reciprocating_speed_mms": 449.1,
+      "drill_rpm": 159.1,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 68,
+      "time_slot": "17:00",
+      "minutes_since_midnight": 1020,
+      "worktable_speed_mms": 172.4,
+      "spindle_reciprocating_speed_mms": 454.3,
+      "drill_rpm": 160.9,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 69,
+      "time_slot": "17:15",
+      "minutes_since_midnight": 1035,
+      "worktable_speed_mms": 174.6,
+      "spindle_reciprocating_speed_mms": 461.6,
+      "drill_rpm": 163.5,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 70,
+      "time_slot": "17:30",
+      "minutes_since_midnight": 1050,
+      "worktable_speed_mms": 177.2,
+      "spindle_reciprocating_speed_mms": 470.4,
+      "drill_rpm": 166.6,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 71,
+      "time_slot": "17:45",
+      "minutes_since_midnight": 1065,
+      "worktable_speed_mms": 180.0,
+      "spindle_reciprocating_speed_mms": 480.0,
+      "drill_rpm": 170.0,
+      "machine_state": "running"
+    },
+    {
+      "slot_index": 72,
+      "time_slot": "18:00",
+      "minutes_since_midnight": 1080,
+      "worktable_speed_mms": 180.0,
+      "spindle_reciprocating_speed_mms": 480.0,
+      "drill_rpm": 170.0,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 73,
+      "time_slot": "18:15",
+      "minutes_since_midnight": 1095,
+      "worktable_speed_mms": 155.0,
+      "spindle_reciprocating_speed_mms": 420.0,
+      "drill_rpm": 145.7,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 74,
+      "time_slot": "18:30",
+      "minutes_since_midnight": 1110,
+      "worktable_speed_mms": 130.0,
+      "spindle_reciprocating_speed_mms": 360.0,
+      "drill_rpm": 121.4,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 75,
+      "time_slot": "18:45",
+      "minutes_since_midnight": 1125,
+      "worktable_speed_mms": 105.0,
+      "spindle_reciprocating_speed_mms": 300.0,
+      "drill_rpm": 97.1,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 76,
+      "time_slot": "19:00",
+      "minutes_since_midnight": 1140,
+      "worktable_speed_mms": 80.0,
+      "spindle_reciprocating_speed_mms": 240.0,
+      "drill_rpm": 72.9,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 77,
+      "time_slot": "19:15",
+      "minutes_since_midnight": 1155,
+      "worktable_speed_mms": 55.0,
+      "spindle_reciprocating_speed_mms": 180.0,
+      "drill_rpm": 48.6,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 78,
+      "time_slot": "19:30",
+      "minutes_since_midnight": 1170,
+      "worktable_speed_mms": 30.0,
+      "spindle_reciprocating_speed_mms": 120.0,
+      "drill_rpm": 24.3,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 79,
+      "time_slot": "19:45",
+      "minutes_since_midnight": 1185,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 60.0,
+      "drill_rpm": 0.0,
+      "machine_state": "paused"
+    },
+    {
+      "slot_index": 80,
+      "time_slot": "20:00",
+      "minutes_since_midnight": 1200,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 81,
+      "time_slot": "20:15",
+      "minutes_since_midnight": 1215,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 82,
+      "time_slot": "20:30",
+      "minutes_since_midnight": 1230,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 83,
+      "time_slot": "20:45",
+      "minutes_since_midnight": 1245,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 84,
+      "time_slot": "21:00",
+      "minutes_since_midnight": 1260,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 85,
+      "time_slot": "21:15",
+      "minutes_since_midnight": 1275,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 86,
+      "time_slot": "21:30",
+      "minutes_since_midnight": 1290,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 87,
+      "time_slot": "21:45",
+      "minutes_since_midnight": 1305,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "idle"
+    },
+    {
+      "slot_index": 88,
+      "time_slot": "22:00",
+      "minutes_since_midnight": 1320,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "maintenance"
+    },
+    {
+      "slot_index": 89,
+      "time_slot": "22:15",
+      "minutes_since_midnight": 1335,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "maintenance"
+    },
+    {
+      "slot_index": 90,
+      "time_slot": "22:30",
+      "minutes_since_midnight": 1350,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "maintenance"
+    },
+    {
+      "slot_index": 91,
+      "time_slot": "22:45",
+      "minutes_since_midnight": 1365,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "maintenance"
+    },
+    {
+      "slot_index": 92,
+      "time_slot": "23:00",
+      "minutes_since_midnight": 1380,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "maintenance"
+    },
+    {
+      "slot_index": 93,
+      "time_slot": "23:15",
+      "minutes_since_midnight": 1395,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "maintenance"
+    },
+    {
+      "slot_index": 94,
+      "time_slot": "23:30",
+      "minutes_since_midnight": 1410,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "maintenance"
+    },
+    {
+      "slot_index": 95,
+      "time_slot": "23:45",
+      "minutes_since_midnight": 1425,
+      "worktable_speed_mms": 5.0,
+      "spindle_reciprocating_speed_mms": 10.0,
+      "drill_rpm": 0.0,
+      "machine_state": "maintenance"
+    }
+  ]
+}

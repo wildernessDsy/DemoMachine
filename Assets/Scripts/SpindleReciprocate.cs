@@ -167,6 +167,21 @@ public sealed class SpindleReciprocate : MonoBehaviour
     /// <summary>面板是否打开。</summary>
     public bool IsPanelOpen => _panelOpen;
 
+    float _manualSpeedUntil;
+
+    /// <summary>用户刚拖过速度滑块时，数据库驱动暂时让位。</summary>
+    public bool IsSpeedManual => Time.time < _manualSpeedUntil;
+
+    /// <summary>时间/数据库系统调用：按平均速度 mm/s 设置往复速度。</summary>
+    public void SetExternalSpeedMms(float mms)
+    {
+        if (IsSpeedManual)
+            return;
+        if (Mathf.Abs(AverageSpeedMms - mms) < 0.1f)
+            return;
+        SetAverageSpeedMms(mms);
+    }
+
     void Awake()
     {
         _origin = CurrentPosition;
@@ -469,7 +484,10 @@ public sealed class SpindleReciprocate : MonoBehaviour
         float current = Mathf.Clamp(AverageSpeedMms, minSpeedMms, maxSpeedMms);
         float value = GUI.HorizontalSlider(new Rect(left, sliderY, contentWidth, 20f), current, minSpeedMms, maxSpeedMms);
         if (Mathf.Abs(value - current) > 0.5f)
+        {
             SetAverageSpeedMms(value);
+            _manualSpeedUntil = Time.time + MachineTimeData.ManualHoldSeconds;
+        }
 
         GUI.Label(new Rect(left, sliderY + 22f, contentWidth, 20f), $"{minSpeedMms:F0} mm/s", _smallStyle);
         GUI.Label(new Rect(left, sliderY + 22f, contentWidth, 20f), $"{maxSpeedMms:F0} mm/s", _smallRightStyle);

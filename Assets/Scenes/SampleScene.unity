@@ -150,14 +150,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlatformController
   targets:
   - {fileID: 235920629}
-  maxX: 0.12
-  maxY: 0.12
-  maxZ: 0.12
+  xRange: {x: -0.03, y: 0.004}
+  yRange: {x: 0, y: 0.12}
+  zRange: {x: -0.12, y: 0.12}
   speed: 0.06
   acceleration: 0.25
+  addSupportPillar: 1
+  pillarBaseDrop: 0.28
+  pillarRadiusFactor: 0.5
+  pillarColor: {r: 0.55, g: 0.57, b: 0.6, a: 1}
   panelTitle: "\u5DE5\u4F5C\u53F0\u8FD0\u52A8\u53C2\u6570"
+  openPanelOnStart: 0
   clickPadding: 0.03
-  autoDemo: 0
+  playAutoDemoOnStart: 1
 --- !u!4 &69599708
 Transform:
   m_ObjectHideFlags: 0
@@ -532,6 +537,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &926340618
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 926340620}
+  - component: {fileID: 926340619}
+  m_Layer: 0
+  m_Name: MachineTimeSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &926340619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926340618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 027469b9303125249acd08b823fbdf1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MachineTimeController
+  startHour: 8
+  minutesPerRealSecond: 10
+  loop: 1
+  interpolateBetweenSlots: 1
+  showClock: 1
+--- !u!4 &926340620
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926340618}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1635254357
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -708,3 +762,4 @@ SceneRoots:
   - {fileID: 1635254357}
   - {fileID: 2080572494}
   - {fileID: 69599708}
+  - {fileID: 926340620}

@@ -55,6 +55,24 @@ public sealed class DrillController : MonoBehaviour
     /// <summary>当前每圈秒数；0 表示已停止。</summary>
     public float SecondsPerRevolution => _rpm > 0.01f ? 60f / _rpm : 0f;
 
+    float _manualRpmUntil;
+
+    /// <summary>用户刚拖过转速滑块时，数据库驱动暂时让位。</summary>
+    public bool IsRpmManual => Time.time < _manualRpmUntil;
+
+    /// <summary>时间/数据库系统调用：按 RPM 设置钻头转速。</summary>
+    public void SetExternalRpm(float rpm)
+    {
+        if (IsRpmManual)
+            return;
+
+        float next = Mathf.Clamp(rpm, minRpm, maxRpm);
+        if (Mathf.Abs(_rpm - next) < 0.05f)
+            return;
+
+        _rpm = next;
+    }
+
     void Awake()
     {
         _camera = Camera.main;
@@ -198,7 +216,10 @@ public sealed class DrillController : MonoBehaviour
 
         float value = GUI.HorizontalSlider(new Rect(left, sliderY, contentWidth, 20f), _rpm, minRpm, maxRpm);
         if (Mathf.Abs(value - _rpm) > 0.0001f)
+        {
             _rpm = Mathf.Clamp(value, minRpm, maxRpm);
+            _manualRpmUntil = Time.time + MachineTimeData.ManualHoldSeconds;
+        }
 
         GUI.Label(new Rect(left, sliderY + 22f, contentWidth, 20f), $"{minRpm:F0} RPM", _smallStyle);
         GUI.Label(new Rect(left, sliderY + 22f, contentWidth, 20f), $"{maxRpm:F0} RPM", _smallRightStyle);

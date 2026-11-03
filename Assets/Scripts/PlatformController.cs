@@ -89,6 +89,24 @@ public sealed class PlatformController : MonoBehaviour
     public Vector3 CurrentOffset => _offset;
     public bool PanelOpen => _panelOpen;
 
+    float _manualSpeedUntil;
+
+    /// <summary>用户刚拖过速度滑块时，数据库驱动暂时让位。</summary>
+    public bool IsSpeedManual => Time.time < _manualSpeedUntil;
+
+    /// <summary>时间/数据库系统调用：按 mm/s 设置工作台速度。</summary>
+    public void SetExternalSpeedMms(float mms)
+    {
+        if (IsSpeedManual)
+            return;
+
+        float mps = Mathf.Clamp(mms / 1000f, 0.005f, 0.5f);
+        if (Mathf.Abs(speed - mps) < 0.0001f)
+            return;
+
+        speed = mps;
+    }
+
     void Awake()
     {
         NormalizeRanges();
@@ -394,7 +412,12 @@ public sealed class PlatformController : MonoBehaviour
         y = DrawAxis(left, y, contentWidth, "Z  前后", ref _targetOffset.z, zRange.x, zRange.y);
 
         GUI.Label(new Rect(left, y, contentWidth, 18f), $"速度 {speed * 1000f:F0} mm/s", _labelStyle);
-        speed = GUI.HorizontalSlider(new Rect(left, y + 18f, contentWidth, 14f), speed, 0.005f, 0.3f);
+        float nextSpeed = GUI.HorizontalSlider(new Rect(left, y + 18f, contentWidth, 14f), speed, 0.005f, 0.3f);
+        if (Mathf.Abs(nextSpeed - speed) > 1e-5f)
+        {
+            speed = nextSpeed;
+            _manualSpeedUntil = Time.time + MachineTimeData.ManualHoldSeconds;
+        }
         y += 40f;
 
         GUI.Label(new Rect(left, y, contentWidth, 18f), $"加速度 {acceleration:F2} m/s²", _labelStyle);
