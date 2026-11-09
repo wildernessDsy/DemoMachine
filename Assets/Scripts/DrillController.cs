@@ -52,7 +52,7 @@ public sealed class DrillController : MonoBehaviour
     /// <summary>当前实时转速。</summary>
     public float CurrentRpm => _rpm;
 
-    /// <summary>当前每圈秒数；0 表示已停止。</summary>
+    /// <summary>当前每圈秒数；0 表示stopped。</summary>
     public float SecondsPerRevolution => _rpm > 0.01f ? 60f / _rpm : 0f;
 
     float _manualRpmUntil;
@@ -196,7 +196,12 @@ public sealed class DrillController : MonoBehaviour
         EnsureStyles();
 
         Rect panel = GetPanelRect();
-        GUI.Box(panel, GUIContent.none, _panelStyle);
+        {
+            Color boxColor = GUI.color;
+            GUI.color = new Color(0.04f, 0.05f, 0.07f, 0.86f);
+            GUI.DrawTexture(panel, Texture2D.whiteTexture);
+            GUI.color = boxColor;
+        }
 
         float left = panel.x + 18f;
         float top = panel.y + 12f;
@@ -298,8 +303,7 @@ public sealed class DrillController : MonoBehaviour
         _fontTried = true;
         try
         {
-            _cjkFont = Font.CreateDynamicFontFromOSFont(
-                new[] { "Microsoft YaHei UI", "Microsoft YaHei", "SimHei", "Noto Sans CJK SC", "Arial Unicode MS" }, 20);
+            _cjkFont = CjkFont.Get();
         }
         catch
         {

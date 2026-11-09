@@ -63,6 +63,9 @@ public sealed class MachineViewController : MonoBehaviour
     [Tooltip("上下移动的最大距离（米）。")]
     public float maxVertical = 1.2f;
 
+    [Tooltip("勾上后取消所有移动范围限制，可以自由走到机床任意一侧（演示用）。")]
+    public bool freeWalk;
+
     [Min(10f)]
     [Tooltip("Z / X 左右转向的速度（度/秒）。")]
     public float turnSpeed = 90f;
@@ -200,9 +203,9 @@ public sealed class MachineViewController : MonoBehaviour
         _velocity = Vector3.MoveTowards(_velocity, targetVelocity, rate * Time.deltaTime);
 
         Vector3 nextOffset = _offset + _velocity * Time.deltaTime;
-        float clampedX = Mathf.Clamp(nextOffset.x, -maxStrafe, maxStrafe);
-        float clampedY = Mathf.Clamp(nextOffset.y, -maxVertical, maxVertical);
-        float clampedZ = Mathf.Clamp(nextOffset.z, -maxRetreat, _maxApproach);
+        float clampedX = freeWalk ? nextOffset.x : Mathf.Clamp(nextOffset.x, -maxStrafe, maxStrafe);
+        float clampedY = freeWalk ? nextOffset.y : Mathf.Clamp(nextOffset.y, -maxVertical, maxVertical);
+        float clampedZ = freeWalk ? nextOffset.z : Mathf.Clamp(nextOffset.z, -maxRetreat, _maxApproach);
         if (!Mathf.Approximately(clampedX, nextOffset.x))
             _velocity.x = 0f;
         if (!Mathf.Approximately(clampedY, nextOffset.y))
@@ -599,8 +602,7 @@ public sealed class MachineViewController : MonoBehaviour
             try
             {
                 // 默认字体没有中文字形，挑一个系统中文字体。
-                _cjkFont = Font.CreateDynamicFontFromOSFont(
-                    new[] { "Microsoft YaHei UI", "Microsoft YaHei", "SimHei", "Noto Sans CJK SC", "Arial Unicode MS" }, 20);
+                _cjkFont = CjkFont.Get();
             }
             catch
             {

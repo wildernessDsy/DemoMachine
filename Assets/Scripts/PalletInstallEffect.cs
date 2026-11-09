@@ -57,6 +57,9 @@ public sealed class PalletInstallEffect : MonoBehaviour
     [Tooltip("进入 Play 后自动播放一次")]
     public bool autoPlayOnStart = true;
 
+    [Tooltip("勾选后进入场景时托盘已经装在转台上，不再从上方落下。")]
+    public bool startInstalled = true;
+
     [Header("转台运行")]
     [Tooltip("安装完成后自动转动 C 轴转台")]
     public bool runTableAfterInstall = true;
@@ -130,10 +133,24 @@ public sealed class PalletInstallEffect : MonoBehaviour
 
         BuildPallet();
 
-        if (autoPlayOnStart)
+        if (startInstalled)
+        {
+            if (_palletRoot != null)
+            {
+                _palletRoot.transform.localPosition = _restLocalPosition;
+                _palletRoot.transform.localRotation = Quaternion.identity;
+            }
+            MarkInstalled();
+            UpdateTableMotion();
+        }
+        else if (autoPlayOnStart)
+        {
             PlayInstall();
+        }
         else
+        {
             ResetToStartPose();
+        }
     }
 
     void OnDestroy()

@@ -183,6 +183,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1958885881499577657, guid: efeac76ffc7c3c1448956e4c6dba4d85, type: 3}
   m_PrefabInstance: {fileID: 1635254357}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &268137013
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 268137015}
+  - component: {fileID: 268137014}
+  m_Layer: 0
+  m_Name: PauseMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &268137014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268137013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26fdca234563da847afe302d35f8202e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
+  title: "\u5DF2\u6682\u505C"
+  hint: "\u6309 Esc \u6216\u70B9\u4E0B\u9762\u7684\u6309\u94AE\u7EE7\u7EED"
+--- !u!4 &268137015
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268137013}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.48451, y: 1.32145, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,6 +242,8 @@ GameObject:
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
+  - component: {fileID: 330585549}
+  - component: {fileID: 330585550}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -344,9 +392,10 @@ MonoBehaviour:
   acceleration: 7
   deceleration: 12
   closestStandoff: -0.7
-  maxRetreat: 4
-  maxStrafe: 3
-  maxVertical: 1.2
+  maxRetreat: 40
+  maxStrafe: 25
+  maxVertical: 12
+  freeWalk: 1
   turnSpeed: 90
   turnAcceleration: 360
   focusHeightFraction: 0.45
@@ -356,6 +405,62 @@ MonoBehaviour:
   focusMinDistance: 0.12
   focusMaxDistance: 1.2
   showHints: 1
+--- !u!114 &330585549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60638b9e288fec94b8055cc248b3f94a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FirstPersonCamera
+  moveSpeed: 3.2
+  sprintMultiplier: 1.8
+  acceleration: 25
+  verticalSpeed: 2.2
+  gravity: 0
+  mouseSensitivity: 1
+  degreesPerPixel: 0.07
+  lookSmoothing: 14
+  invertY: 0
+  holdToLook: 1
+  lockCursorOnStart: 1
+  eyeHeight: 1.75
+  controlsEnabled: 1
+  addMachineCollider: 1
+  showHints: 1
+  showCrosshair: 0
+  headBob: 0
+  headBobRoll: 0
+  bobFrequency: 9
+--- !u!143 &330585550
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1.7
+  m_Radius: 0.3
+  m_SlopeLimit: 50
+  m_StepOffset: 0.35
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: -0.85, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,6 +787,7 @@ MonoBehaviour:
   settleDepthMm: 4
   startYawDegrees: -32
   autoPlayOnStart: 1
+  startInstalled: 1
   runTableAfterInstall: 1
   tableDegreesPerSecond: 40
   tableRunSeconds: 8
@@ -763,3 +869,4 @@ SceneRoots:
   - {fileID: 2080572494}
   - {fileID: 69599708}
   - {fileID: 926340620}
+  - {fileID: 268137015}

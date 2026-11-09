@@ -78,13 +78,13 @@ public sealed class PlatformController : MonoBehaviour
     float _pillarZ;
     bool _pillarReady;
 
-    GUIStyle _panelStyle, _titleStyle, _labelStyle, _valueStyle, _smallStyle, _closeStyle;
+    GUIStyle _panelStyle, _titleStyle, _labelStyle, _valueStyle, _smallStyle, _closeStyle, _buttonStyle;
     Texture2D _panelTexture;
     static Font _cjkFont;
     static bool _fontTried;
 
-    const float PanelWidth = 300f;
-    const float PanelHeight = 322f;
+    const float PanelWidth = 440f;
+    const float PanelHeight = 430f;
 
     public Vector3 CurrentOffset => _offset;
     public bool PanelOpen => _panelOpen;
@@ -302,6 +302,25 @@ public sealed class PlatformController : MonoBehaviour
         UpdatePillar();
     }
 
+    /// <summary>按目标节点的真实位移计算当前偏移，避免显示与实际不同步。</summary>
+    Vector3 ActualOffset()
+    {
+        if (_roots == null || _roots.Length == 0 || _baseWorldPositions == null)
+            return _offset;
+
+        Vector3 delta = Vector3.zero;
+        int count = 0;
+        for (int i = 0; i < _roots.Length; i++)
+        {
+            if (_roots[i] == null)
+                continue;
+            delta += _roots[i].position - _baseWorldPositions[i];
+            count++;
+        }
+
+        return count > 0 ? delta / count : _offset;
+    }
+
     void StepMotion(float dt)
     {
         Vector3 toTarget = _targetOffset - _offset;
@@ -373,6 +392,28 @@ public sealed class PlatformController : MonoBehaviour
         UpdatePillar();
     }
 
+    /// <summary>切换机器时恢复该机器的工作台位置。</summary>
+    public void SetOffset(Vector3 offset)
+    {
+        autoDemo = false;
+        _velocity = Vector3.zero;
+        _offset = new Vector3(
+            Mathf.Clamp(offset.x, xRange.x, xRange.y),
+            Mathf.Clamp(offset.y, yRange.x, yRange.y),
+            Mathf.Clamp(offset.z, zRange.x, zRange.y));
+        _targetOffset = _offset;
+
+        if (_roots == null)
+            return;
+
+        for (int i = 0; i < _roots.Length; i++)
+        {
+            if (_roots[i] != null)
+                _roots[i].position = _baseWorldPositions[i] + _offset;
+        }
+        UpdatePillar();
+    }
+
     // ------------------------------------------------------------------ 面板
 
     Rect GetPanelRect()
@@ -392,7 +433,12 @@ public sealed class PlatformController : MonoBehaviour
         EnsureStyles();
 
         Rect panel = GetPanelRect();
-        GUI.Box(panel, GUIContent.none, _panelStyle);
+        {
+            Color boxColor = GUI.color;
+            GUI.color = new Color(0.04f, 0.05f, 0.07f, 0.86f);
+            GUI.DrawTexture(panel, Texture2D.whiteTexture);
+            GUI.color = boxColor;
+        }
 
         float left = panel.x + 14f;
         float contentWidth = panel.width - 28f;
@@ -403,6 +449,7 @@ public sealed class PlatformController : MonoBehaviour
             _panelOpen = false;
         y += 30f;
 
+        Vector3 shown = ActualOffset();
         string pos = $"X {_offset.x * 1000f:+0;-0;0}   Y {_offset.y * 1000f:+0;-0;0}   Z {_offset.z * 1000f:+0;-0;0} mm";
         GUI.Label(new Rect(left, y, contentWidth, 20f), pos, _valueStyle);
         y += 24f;
@@ -424,10 +471,10 @@ public sealed class PlatformController : MonoBehaviour
         acceleration = GUI.HorizontalSlider(new Rect(left, y + 18f, contentWidth, 14f), acceleration, 0.01f, 1.5f);
         y += 40f;
 
-        if (GUI.Button(new Rect(left, y, (contentWidth - 8f) * 0.5f, 26f), autoDemo ? "停止演示" : "自动演示"))
+        if (GUI.Button(new Rect(left, y, (contentWidth - 8f) * 0.5f, 26f), autoDemo ? "停止演示" : "自动演示", _buttonStyle))
             autoDemo = !autoDemo;
 
-        if (GUI.Button(new Rect(left + (contentWidth + 8f) * 0.5f, y, (contentWidth - 8f) * 0.5f, 26f), "复位"))
+        if (GUI.Button(new Rect(left + (contentWidth + 8f) * 0.5f, y, (contentWidth - 8f) * 0.5f, 26f), "重置", _buttonStyle))
             ResetToBase();
 
         GUI.Label(new Rect(left, panel.yMax - 22f, contentWidth, 18f),
@@ -487,6 +534,16 @@ public sealed class PlatformController : MonoBehaviour
         _closeStyle = new GUIStyle(GUI.skin.button) { fontSize = 16, alignment = TextAnchor.MiddleCenter };
 
         Font font = GetCjkFont();
+        _buttonStyle = new GUIStyle(GUI.skin.button)
+        {
+            fontSize = 13,
+            alignment = TextAnchor.MiddleCenter
+        };
+        Color btnText = new Color(0.92f, 0.95f, 1f);
+        _buttonStyle.normal.textColor = btnText;
+        _buttonStyle.hover.textColor = Color.white;
+        _buttonStyle.active.textColor = Color.white;
+        _buttonStyle.focused.textColor = btnText;
         if (font != null)
         {
             _titleStyle.font = font;
@@ -494,6 +551,7 @@ public sealed class PlatformController : MonoBehaviour
             _valueStyle.font = font;
             _smallStyle.font = font;
             _closeStyle.font = font;
+        _buttonStyle.font = font;
         }
     }
 
@@ -505,8 +563,7 @@ public sealed class PlatformController : MonoBehaviour
         _fontTried = true;
         try
         {
-            _cjkFont = Font.CreateDynamicFontFromOSFont(
-                new[] { "Microsoft YaHei UI", "Microsoft YaHei", "SimHei", "Noto Sans CJK SC", "Arial Unicode MS" }, 20);
+            _cjkFont = CjkFont.Get();
         }
         catch
         {

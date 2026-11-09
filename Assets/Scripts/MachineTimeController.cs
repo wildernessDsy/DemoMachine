@@ -154,10 +154,15 @@ public sealed class MachineTimeController : MonoBehaviour
 
         EnsureStyles();
 
-        const float width = 310f;
-        const float height = 160f;
+        const float width = 430f;
+        const float height = 290f;
         var panel = new Rect(16f, Screen.height - height - 16f, width, height);
-        GUI.Box(panel, GUIContent.none, _panelStyle);
+        {
+            Color boxColor = GUI.color;
+            GUI.color = new Color(0.04f, 0.05f, 0.07f, 0.86f);
+            GUI.DrawTexture(panel, Texture2D.whiteTexture);
+            GUI.color = boxColor;
+        }
 
         float left = panel.x + 16f;
         float top = panel.y + 10f;
@@ -262,28 +267,7 @@ public sealed class MachineTimeController : MonoBehaviour
 
     static Font GetCjkFont()
     {
-        if (_fontTried)
-            return _cjkFont;
-        _fontTried = true;
-
-        string[] names = { "Microsoft YaHei UI", "Microsoft YaHei", "SimHei", "SimSun" };
-        foreach (string name in names)
-        {
-            try
-            {
-                Font font = Font.CreateDynamicFontFromOSFont(name, 16);
-                if (font != null)
-                {
-                    _cjkFont = font;
-                    break;
-                }
-            }
-            catch
-            {
-                // try next font
-            }
-        }
-        return _cjkFont;
+        return CjkFont.Get();
     }
 
     void OnDestroy()
