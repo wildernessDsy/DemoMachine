@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>五轴机床演示系统</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0e13; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif; }
+
+  #unity-canvas {
+    position: fixed; left: 0; top: 0; width: 100%; height: 100%;
+    display: block; background: #0b0e13; opacity: 0; transition: opacity .25s ease;
+  }
+
+  /* ── 登录 ───────────────────────────────────── */
+  #login-view {
+    position: fixed; left: 0; top: 0; right: 0; bottom: 0;
+    z-index: 10; display: flex; align-items: center; justify-content: center;
+    background: #eceff3; padding: 24px;
+  }
+  .card {
+    width: 100%; max-width: 420px; background: #ffffff;
+    border: 1px solid #e0e3e8; border-radius: 6px;
+    box-shadow: 0 8px 28px rgba(18, 24, 31, 0.08);
+    padding: 32px 32px 28px;
+  }
+  h1 { font-size: 26px; font-weight: 700; text-align: center; margin: 0 0 8px; color: #12181f; letter-spacing: 1px; }
+  .sub { text-align: center; color: #6b7280; font-size: 13px; margin: 0 0 26px; }
+  label { display: block; font-size: 13px; color: #3b434e; margin: 0 0 6px; }
+  input {
+    width: 100%; height: 40px; padding: 0 12px; font-size: 15px; color: #12181f;
+    background: #ffffff; border: 1px solid #e0e3e8; border-radius: 4px;
+    outline: none; margin: 0 0 18px 0;
+  }
+  input:focus { border-color: #1d6fe0; box-shadow: 0 0 0 3px rgba(29, 111, 224, 0.12); }
+  button.primary {
+    width: 100%; height: 44px; border: 0; border-radius: 4px;
+    background: #1d6fe0; color: #ffffff;
+    font-size: 16px; font-weight: 700; letter-spacing: 2px; cursor: pointer;
+  }
+  button.primary:hover { background: #1a63c8; }
+  button.primary:disabled { background: #93b6e8; cursor: default; }
+  .switch { display: block; width: 100%; margin-top: 16px; background: none; border: 0; color: #1d6fe0; font-size: 14px; cursor: pointer; }
+  .msg { min-height: 20px; margin-top: 14px; font-size: 13px; color: #6b7280; }
+  .msg.error { color: #c62828; }
+  .msg.ok { color: #1f7a45; }
+
+  /* ── 加载 ───────────────────────────────────── */
+  #boot {
+    position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 9;
+    display: none; align-items: center; justify-content: center; flex-direction: column;
+    gap: 16px; color: #cfd6e0; font-size: 14px; background: #0b0e13; text-align: center; padding: 24px;
+  }
+  #bar { width: 240px; height: 6px; background: #232a35; border-radius: 3px; overflow: hidden; }
+  #bar i { display: block; height: 100%; width: 0; background: #1d6fe0; transition: width .2s ease; }
+  #boot-hint { max-width: 560px; color: #8d99a9; font-size: 12.5px; line-height: 1.9; }
+  #boot-hint code { background: #171d27; border: 1px solid #2a3442; border-radius: 4px; padding: 1px 6px; color: #8fc0ff; }
+
+  /* ── 右上角 / 右下角 ─────────────────────────── */
+  #who {
+    position: fixed; right: 14px; bottom: 14px; z-index: 11; display: none;
+    align-items: center; gap: 10px;
+    background: rgba(11, 14, 19, 0.78); color: #e6ebf2;
+    font-size: 13px; padding: 8px 12px; border-radius: 4px;
+  }
+  #who button { background: none; border: 1px solid #4a5566; color: #cfd6e0; border-radius: 3px; padding: 2px 8px; font-size: 12px; cursor: pointer; }
+
+  #back-btn {
+    position: fixed; right: 14px; top: 14px; z-index: 11; display: none;
+    background: rgba(11, 14, 19, 0.78); color: #e6ebf2; border: 1px solid #4a5566;
+    border-radius: 4px; padding: 7px 14px; font-size: 13px; cursor: pointer;
+  }
+  #back-btn:hover { border-color: #1d6fe0; }
+
+  /* ── 选择机床 ───────────────────────────────── */
+  #select-view {
+    position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 12;
+    display: none; align-items: center; justify-content: center; flex-direction: column;
+    gap: 28px; background: #0b0e13; padding: 24px;
+  }
+  #select-view h2 { color: #f2f5f9; font-size: 24px; font-weight: 700; margin: 0; letter-spacing: 2px; }
+  #select-view p { color: #8d99a9; font-size: 13px; margin: 0; }
+  .machines { display: flex; gap: 22px; flex-wrap: wrap; justify-content: center; }
+  .machine {
+    width: 220px; min-height: 150px; padding: 22px 18px; cursor: pointer;
+    background: #141a23; border: 1px solid #2a3442; border-radius: 8px;
+    color: #e6ebf2; text-align: left; transition: border-color .15s, transform .15s, background .15s;
+  }
+  .machine:hover { border-color: #1d6fe0; background: #172232; transform: translateY(-3px); }
+  .machine b { display: block; font-size: 18px; margin-bottom: 8px; }
+  .machine span { display: block; font-size: 12px; color: #8d99a9; line-height: 1.7; }
+
+  /* ── 场景准备中 ─────────────────────────────── */
+  #ready-view {
+    position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 13;
+    display: none; align-items: center; justify-content: center; flex-direction: column;
+    gap: 18px; background: #0b0e13; color: #cfd6e0;
+  }
+  #ready-view .dot {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 3px solid #232a35; border-top-color: #1d6fe0;
+    animation: spin .9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #ready-view span { font-size: 14px; letter-spacing: 2px; }
+
+  /* ── 数据存档操作条（dsy-new 新增）─────────────── */
+  #data-dock {
+    position: fixed; left: 14px; bottom: 14px; z-index: 11; display: none;
+    flex-wrap: wrap; align-items: center; gap: 8px;
+    background: rgba(11, 14, 19, 0.82); border: 1px solid #2a3442;
+    border-radius: 6px; padding: 8px 10px;
+    color: #cfd6e0; font-size: 12.5px; max-width: calc(100vw - 240px);
+  }
+  #data-dock .cap { color: #8d99a9; letter-spacing: .5px; }
+  #data-dock .cap b { color: #73e6a6; font-weight: 600; }
+  #data-dock button {
+    background: #171d27; border: 1px solid #2a3442; color: #cfd6e0;
+    border-radius: 4px; padding: 4px 10px; font-size: 12.5px; cursor: pointer;
+    font-family: inherit;
+  }
+  #data-dock button:hover { border-color: #73e6a6; color: #73e6a6; }
+  #data-dock button.danger:hover { border-color: #ff8a8a; color: #ff8a8a; }
+
+  @media (max-width: 720px) {
+    #data-dock { max-width: calc(100vw - 28px); }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="unity-canvas" tabindex="-1"></canvas>
+
+<div id="boot">
+  <div id="boot-text">正在加载三维场景…</div>
+  <div id="bar"><i></i></div>
+  <div id="boot-hint"></div>
+</div>
+
+<div id="login-view">
+  <form class="card" id="auth-form" autocomplete="off">
+    <h1>五轴机床演示系统</h1>
+    <p class="sub" id="sub">请登录后进入演示</p>
+
+    <label for="email">邮箱</label>
+    <input id="email" type="email" placeholder="name@example.com" required>
+
+    <label for="password">密码</label>
+    <input id="password" type="password" placeholder="至少 4 位" required>
+
+    <button class="primary" type="submit" id="submit">登 录</button>
+    <button class="switch" type="button" id="switch">没有账号？立即注册</button>
+    <div class="msg" id="msg"></div>
+  </form>
+</div>
+
+<div id="who"><span id="who-name"></span><button type="button" id="logout">退出</button></div>
+
+<button type="button" id="back-btn">← 返回选择</button>
+
+<div id="ready-view"><div class="dot"></div><span>场景准备中…</span></div>
+
+<div id="select-view">
+  <h2>选择查看的机床</h2>
+  <p>三台机床参数相互独立，进入后单独调整；演示数据按当天分别保存</p>
+  <div class="machines">
+    <button type="button" class="machine" data-index="0">
+      <b>机器 1</b>
+      <span>五轴加工中心<br>实时参数在线调整</span>
+    </button>
+    <button type="button" class="machine" data-index="1">
+      <b>机器 2</b>
+      <span>五轴加工中心<br>独立转速与工作台</span>
+    </button>
+    <button type="button" class="machine" data-index="2">
+      <b>机器 3</b>
+      <span>五轴加工中心<br>独立转速与工作台</span>
+    </button>
+  </div>
+</div>
+
+<!-- dsy-new：把“演示过的当日实时参数”存下来之后，这里提供网页侧的操作入口 -->
+<div id="data-dock">
+  <span class="cap">当日参数 <b>自动保存</b>（浏览器本地）</span>
+  <button type="button" data-act="panel">保存面板</button>
+  <button type="button" data-act="save">立即保存</button>
+  <button type="button" data-act="export">导出 JSON</button>
+  <button type="button" data-act="sync">同步云端</button>
+  <button type="button" data-act="clear" class="danger">清空今日</button>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ════════════════════════════════════════════════════════════
+  //  配置
+  // ════════════════════════════════════════════════════════════
+  var params = new URLSearchParams(location.search);
+
+  // 构建产物放在哪里：按顺序探测，谁先加载成功用谁。
+  //   队友的站点：  game/Build/WebGLBuild.loader.js
+  //   Unity 默认：  Build/DemoMachine.loader.js
+  // 也可以用 ?build=Build/xxx.loader.js 直接指定。
+  var BUILD_CANDIDATES = params.get("build")
+    ? [params.get("build")]
+    : [
+        "game/Build/WebGLBuild.loader.js",
+        "game/Build/DemoMachine.loader.js",
+        "Build/WebGLBuild.loader.js",
+        "Build/DemoMachine.loader.js"
+      ];
+
+  // 压缩格式：Unity 出图时选 Gzip 会得到 .data.gz / .wasm.gz / .framework.js.gz，
+  // 选 Disabled 则是没有后缀的。?gz=1 / ?gz=0 可以强制，默认自动探测。
+  var gzParam = params.get("gz");
+  var forceGzip = gzParam === null ? null : gzParam !== "0";
+
+  var apiBase = params.get("api") || "";
+
+  // 场景实例化后，等多久再显示选机界面（毫秒）
+  var readyDelay = Number(params.get("ready") || 2200);
+
+  // 这些 GameObject 上都可能挂着 MachineDataRecorder，按顺序尝试
+  var RECORDER_OBJECTS = ["MachineDataRecorder", "MachineDataRecorderSystem"];
+
+  var COMPANY_NAME = "DefaultCompany";
+  var PRODUCT_NAME = "DemoMachine";
+
+  // ════════════════════════════════════════════════════════════
+  //  小工具
+  // ════════════════════════════════════════════════════════════
+  var $ = function (id) { return document.getElementById(id); };
+
+  var email = $("email"), password = $("password"), submit = $("submit");
+  var switchBtn = $("switch"), msg = $("msg"), sub = $("sub");
+  var loginView = $("login-view"), boot = $("boot"), bootText = $("boot-text");
+  var bootBar = document.querySelector("#bar i"), bootHint = $("boot-hint");
+  var who = $("who"), whoName = $("who-name"), logoutBtn = $("logout");
+  var selectView = $("select-view"), backBtn = $("back-btn"), dataDock = $("data-dock");
+  var canvas = $("unity-canvas"), readyView = $("ready-view");
+
+  var unityInstance = null;
+  var registerMode = false;
+  var started = false;
+  var enteredMachine = null;
+
+  function showMessage(text, kind) {
+    msg.textContent = text || "";
+    msg.className = "msg" + (kind ? " " + kind : "");
+  }
+
+  // 统一封装 SendMessage：对象名/方法名不对时只打日志，不炸页面
+  function send(objectNames, fn, arg) {
+    if (!unityInstance) { console.warn("[unity] 尚未就绪，忽略 " + fn); return false; }
+    for (var i = 0; i < objectNames.length; i++) {
+      try {
+        if (arg === undefined) unityInstance.SendMessage(objectNames[i], fn);
+        else unityInstance.SendMessage(objectNames[i], fn, String(arg));
+        return true;
+      } catch (e) {
+        // 换下一个候选对象名
+      }
+    }
+    console.warn("[unity] 没有找到可调用的对象：" + fn);
+    return false;
+  }
+
+  // localStorage 在 file:// 下可能被禁用，这里做内存兜底
+  var memoryStore = {};
+  var storage = {
+    get: function (key) {
+      try { return window.localStorage.getItem(key); }
+      catch (e) { return Object.prototype.hasOwnProperty.call(memoryStore, key) ? memoryStore[key] : null; }
+    },
+    set: function (key, value) {
+      try { window.localStorage.setItem(key, value); return; }
+      catch (e) { memoryStore[key] = value; }
+    },
+    remove: function (key) {
+      try { window.localStorage.removeItem(key); return; }
+      catch (e) { delete memoryStore[key]; }
+    }
+  };
+
+  // ════════════════════════════════════════════════════════════
+  //  账号（和队友的版本保持一致：localStorage + SHA-256）
+  // ════════════════════════════════════════════════════════════
+  var ACCOUNTS_KEY = "auth.accounts";
+  var SESSION_KEY = "auth.session";
+
+  function loadAccounts() {
+    try { return JSON.parse(storage.get(ACCOUNTS_KEY) || "{}"); }
+    catch (e) { return {}; }
+  }
+  function saveAccounts(map) { storage.set(ACCOUNTS_KEY, JSON.stringify(map)); }
+
+  async function hash(text) {
+    if (window.crypto && window.crypto.subtle && window.isSecureContext) {
+      try {
+        var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      } catch (e) { /* 回退到下面 */ }
+    }
+    var h = 5381;
+    for (var i = 0; i < text.length; i++) h = ((h << 5) + h + text.charCodeAt(i)) | 0;
+    return "djb2_" + (h >>> 0).toString(16);
+  }
+
+  function valid() {
+    var e = (email.value || "").trim();
+    var p = password.value || "";
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) { showMessage("请输入有效的邮箱", "error"); return null; }
+    if (p.length < 4) { showMessage("密码至少 4 位", "error"); return null; }
+    return { email: e, password: p };
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  加载 WebGL 构建
+  // ════════════════════════════════════════════════════════════
+  function isFileProtocol() { return location.protocol === "file:"; }
+
+  function showFileHint() {
+    bootHint.innerHTML =
+      "浏览器不允许从 <code>file://</code> 直接加载 WebGL 构建（跨域限制）。<br>" +
+      "在本文件所在目录打开命令行，执行：<br>" +
+      "<code>python -m http.server 8000</code><br>" +
+      "然后访问 <code>http://localhost:8000/index.html</code>";
+  }
+
+  function tryNextLoader(list, index, onLoaded, onAllFailed) {
+    if (index >= list.length) { onAllFailed(); return; }
+
+    var src = list[index];
+    var tag = document.createElement("script");
+    tag.src = src;
+    tag.async = false;
+
+    tag.onload = function () { onLoaded(src); };
+    tag.onerror = function () {
+      // 加载失败（404 / file:// 被拦），静默换下一个候选
+      tag.parentNode && tag.parentNode.removeChild(tag);
+      tryNextLoader(list, index + 1, onLoaded, onAllFailed);
+    };
+
+    document.head.appendChild(tag);
+  }
+
+  function baseDirOf(loaderSrc) {
+    var clean = loaderSrc.split("?")[0].split("#")[0];
+    var slash = clean.lastIndexOf("/");
+    return slash < 0 ? "" : clean.slice(0, slash);
+  }
+
+  function buildNameOf(loaderSrc) {
+    var clean = loaderSrc.split("?")[0].split("#")[0];
+    var file = clean.slice(clean.lastIndexOf("/") + 1);
+    return file.replace(/\.loader\.js$/i, "");
+  }
+
+  // 探测 .gz 是否存在，决定用哪套文件名
+  function resolveGzip(dir, name) {
+    if (forceGzip !== null) return Promise.resolve(forceGzip);
+
+    var probe = dir + "/" + name + ".data.gz";
+    return fetch(probe, { method: "HEAD" })
+      .then(function (res) { return res.ok; })
+      .catch(function () { return false; });
+  }
+
+  function boot_() {
+    tryNextLoader(
+      BUILD_CANDIDATES,
+      0,
+      function (loaderSrc) {
+        var dir = baseDirOf(loaderSrc);
+        var name = buildNameOf(loaderSrc);
+
+        bootText.textContent = "正在下载三维场景…";
+
+        resolveGzip(dir, name).then(function (gzip) {
+          var suffix = gzip ? ".gz" : "";
+          var root = dir.replace(/\/Build$/, "");
+
+          var config = {
+            dataUrl: dir + "/" + name + ".data" + suffix,
+            frameworkUrl: dir + "/" + name + ".framework.js" + suffix,
+            codeUrl: dir + "/" + name + ".wasm" + suffix,
+            streamingAssetsUrl: root + "/StreamingAssets",
+            devicePixelRatio: 1,
+            companyName: COMPANY_NAME,
+            productName: PRODUCT_NAME,
+            productVersion: "1.0",
+            showBanner: function (text, type) {
+              if (type === "error") { console.error(text); showMessage(String(text), "error"); }
+            }
+          };
+
+          console.log("[demo] 构建目录 =", dir, " 文件名 =", name, " gzip =", gzip);
+
+          createUnityInstance(canvas, config, function (progress) {
+            bootBar.style.width = Math.round(progress * 100) + "%";
+          }).then(function (instance) {
+            unityInstance = instance;
+            onInstanceReady();
+          }).catch(function (err) {
+            onLoadFailed(err);
+          });
+        });
+      },
+      function () {
+        onLoadFailed("找不到 WebGL 构建（探测过：" + BUILD_CANDIDATES.join("、") + "）");
+      }
+    );
+  }
+
+  function onInstanceReady() {
+    boot.style.display = "none";
+    canvas.style.opacity = "0";
+
+    // 云端接口地址：C# 也会自己读 ?api=，这里再明确推一次
+    if (apiBase) {
+      send(RECORDER_OBJECTS, "SetCloudEndpoint", apiBase);
+    }
+
+    readyView.style.display = "flex";
+    setTimeout(function () {
+      readyView.style.display = "none";
+      showSelect();
+    }, readyDelay);
+  }
+
+  function onLoadFailed(err) {
+    boot.style.display = "flex";
+    bootText.textContent = "加载失败：" + (typeof err === "string" ? err : (err && err.message ? err.message : "未知错误"));
+    if (isFileProtocol()) showFileHint();
+    else bootHint.textContent = "检查构建产物是否在预期目录，或用 ?build=相对路径/xxx.loader.js 指定。";
+    console.error("[demo]", err);
+  }
+
+  function startGame(user) {
+    loginView.style.display = "none";
+    who.style.display = "flex";
+    whoName.textContent = "已登录：" + user;
+
+    if (started) return;
+    started = true;
+
+    boot.style.display = "flex";
+    bootText.textContent = "正在加载三维场景…";
+    bootBar.style.width = "0%";
+    bootHint.textContent = "";
+    canvas.style.opacity = "0";
+
+    boot_();
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  选机 / 返回
+  // ════════════════════════════════════════════════════════════
+  function showSelect() {
+    selectView.style.display = "flex";
+    backBtn.style.display = "none";
+    dataDock.style.display = "none";
+  }
+
+  function enterMachine(index) {
+    enteredMachine = index;
+    selectView.style.display = "none";
+    backBtn.style.display = "block";
+    dataDock.style.display = "flex";
+    canvas.style.opacity = "1";
+    send(["MachineSession"], "SelectMachine", index);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".machine"), function (card) {
+    card.addEventListener("click", function () {
+      enterMachine(this.getAttribute("data-index"));
+    });
+  });
+
+  backBtn.addEventListener("click", function () {
+    send(["MachineSession"], "ReturnToSelect");
+    canvas.style.opacity = "0";
+    showSelect();
+  });
+
+  // ════════════════════════════════════════════════════════════
+  //  数据存档操作条（dsy-new）
+  // ════════════════════════════════════════════════════════════
+  dataDock.addEventListener("click", function (ev) {
+    var btn = ev.target.closest ? ev.target.closest("button[data-act]") : null;
+    if (!btn) return;
+
+    var act = btn.getAttribute("data-act");
+
+    if (act === "panel") {
+      send(RECORDER_OBJECTS, "TogglePanel");
+    } else if (act === "save") {
+      send(RECORDER_OBJECTS, "SaveNow");
+      flash(btn, "已保存");
+    } else if (act === "export") {
+      send(RECORDER_OBJECTS, "ExportToday");
+      flash(btn, "已导出");
+    } else if (act === "sync") {
+      send(RECORDER_OBJECTS, "SyncNow");
+      flash(btn, apiBase ? "同步中…" : "未配置接口");
+    } else if (act === "clear") {
+      if (btn.dataset.armed === "1") {
+        send(RECORDER_OBJECTS, "ClearToday");
+        btn.dataset.armed = "0";
+        btn.textContent = "清空今日";
+        flash(btn, "已清空");
+      } else {
+        btn.dataset.armed = "1";
+        btn.textContent = "再点一次确认";
+        setTimeout(function () {
+          if (btn.dataset.armed === "1") {
+            btn.dataset.armed = "0";
+            btn.textContent = "清空今日";
+          }
+        }, 3000);
+      }
+    }
+  });
+
+  function flash(button, text) {
+    var original = button.getAttribute("data-label") || button.textContent;
+    button.setAttribute("data-label", original);
+    button.textContent = text;
+    setTimeout(function () { button.textContent = original; }, 1200);
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  登录表单
+  // ════════════════════════════════════════════════════════════
+  $("auth-form").addEventListener("submit", async function (ev) {
+    ev.preventDefault();
+    var v = valid();
+    if (!v) return;
+
+    submit.disabled = true;
+    try {
+      var accounts = loadAccounts();
+      var key = v.email.toLowerCase();
+      var digest = await hash(v.password);
+
+      if (registerMode) {
+        if (accounts[key]) { showMessage("该邮箱已注册，请直接登录", "error"); return; }
+        accounts[key] = { email: v.email, hash: digest };
+        saveAccounts(accounts);
+        storage.set(SESSION_KEY, v.email);
+        showMessage("注册成功", "ok");
+        startGame(v.email);
+      } else {
+        var account = accounts[key];
+        if (!account) { showMessage("账号不存在，请先注册", "error"); return; }
+        if (account.hash !== digest) { showMessage("密码不正确", "error"); return; }
+        storage.set(SESSION_KEY, v.email);
+        showMessage("登录成功", "ok");
+        startGame(v.email);
+      }
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
+  switchBtn.addEventListener("click", function () {
+    registerMode = !registerMode;
+    sub.textContent = registerMode ? "创建新账号" : "请登录后进入演示";
+    submit.textContent = registerMode ? "注册并登录" : "登 录";
+    switchBtn.textContent = registerMode ? "已有账号，返回登录" : "没有账号？立即注册";
+    showMessage("");
+  });
+
+  logoutBtn.addEventListener("click", function () {
+    storage.remove(SESSION_KEY);
+    location.reload();
+  });
+
+  // 每次打开都要求重新登录（和队友版本一致）
+  storage.remove(SESSION_KEY);
+})();
+</script>
+</body>
+</html>

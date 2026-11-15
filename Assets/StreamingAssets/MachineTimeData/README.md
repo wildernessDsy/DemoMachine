@@ -46,3 +46,57 @@
 - 23:45 与 00:00 都是最小值，循环无缝。
 
 相邻 15 分钟最大变化：工作台 ≤25 mm/s，主轴 ≤60 mm/s，钻头 ≤25 RPM。
+
+---
+
+## 动态保存（dsy-new 起）
+
+上面这套 CSV / SQLite 是**静态基线**：打包进 WebGL 之后就不会再变。
+从 `dsy-new` 分支开始，演示过程中真正跑出来的实时参数会被单独采样保存，
+下次打开同一个站点会**优先读当天存档**，静态演示就变成了动态演示。
+
+### 读数优先级
+
+```
+当天本机存档（演示时存下来的） → 原始 machine_parameters.csv → 内置兜底最小值
+```
+
+想强制回到“纯静态”的效果：取消勾选 `MachineTimeController` 的 `preferSavedData`，
+或者点面板上的「清空今日」。
+
+### 相关文件
+
+| 文件 | 作用 |
+|---|---|
+| `Assets/Scripts/MachineDayStore.cs` | 存档结构 + 本地持久化（PlayerPrefs；WebGL 下就是浏览器 IndexedDB） |
+| `Assets/Scripts/MachineDataRecorder.cs` | 每 0.25 真实秒采样一次，按 15 分钟时段做加权平均，定期落盘 |
+| `Assets/Scripts/MachineDataPanel.cs` | 左上角「实时参数保存」面板（`M` 键开关） |
+| `Assets/Scripts/MachineCloudSync.cs` | 可选的云端上传（`?api=` 参数或 `SetCloudEndpoint`） |
+| `Assets/Scripts/MachineDataDownload.cs` | 导出当日 JSON |
+| `Tools/DynamicSite/` | 可选后端接口 + 网页查看页 |
+
+### 存档键名
+
+```
+dsy.machine.day.<yyyy-MM-dd>.<machineIndex>   # 一台机器一天的 JSON
+dsy.machine.day.index                         # 有数据的日期列表
+dsy.cloud.baseUrl                             # 可选：云端接口地址
+```
+
+默认保留最近 7 天（`MachineDayStore.MaxDaysRetained`），避免吃满 WebGL 下
+PlayerPrefs 的 1MB 配额。
+
+### 字段说明
+
+| 字段 | 单位 | 说明 |
+|---|---|---|
+| `slotIndex` / `timeSlot` | - | 0..95 / `00:00`…`23:45` |
+| `worktableSpeedMms` | mm/s | 该时段内工作台速度的加权平均 |
+| `spindleSpeedMms` | mm/s | 主轴往复平均速度 |
+| `drillRpm` | RPM | 钻头转速 |
+| `machineState` | - | idle / warmup / running / paused / maintenance |
+| `sampleSeconds` | 秒 | 该时段的采样权重（真实时长） |
+| `sampleCount` | 次 | 该时段被采样了几次 |
+| `manual` | - | 演示时用户是否手动拖过滑块 |
+| `updatedAt` | - | 最后一次刷新的真实时间（`HH:mm:ss`） |
+

@@ -18,6 +18,10 @@ public sealed class MachineTimeController : MonoBehaviour
     public bool interpolateBetweenSlots = true;
     public bool showClock = true;
 
+    [Header("动态数据")]
+    [Tooltip("优先使用今天演示时保存下来的存档；关掉则永远只用打包进 StreamingAssets 的原始 CSV。")]
+    public bool preferSavedData = true;
+
     MachineTimeSlot[] _slots;
     string _sourcePath;
     float _minutes;
@@ -29,6 +33,15 @@ public sealed class MachineTimeController : MonoBehaviour
     PlatformController _platform;
     SpindleReciprocate _spindle;
     DrillController _drill;
+    MachineSession _session;
+
+    // 今天这台机器的存档缓存：只有日期 / 机器 / 存档版本变了才重新取。
+    MachineSavedDay _savedDay;
+    int _savedMachine = -2;
+    string _savedDate;
+    int _savedVersion = -1;
+    bool _savedValid;
+    bool _usingSaved;
 
     GUIStyle _panelStyle;
     GUIStyle _titleStyle;
@@ -37,6 +50,7 @@ public sealed class MachineTimeController : MonoBehaviour
     GUIStyle _smallStyle;
     GUIStyle _buttonStyle;
     GUIStyle _manualStyle;
+    GUIStyle _sourceStyle;
     Texture2D _panelTexture;
 
     static Font _cjkFont;
@@ -45,6 +59,15 @@ public sealed class MachineTimeController : MonoBehaviour
     public float CurrentMinutes => _minutes;
     public int CurrentSlot => _currentSlot;
     public bool IsPaused => _paused;
+
+    /// <summary>当前时段的状态（idle / warmup / running / paused / maintenance）。</summary>
+    public string CurrentStateName => _currentState;
+
+    /// <summary>当前时段是否来自“今天保存下来的存档”（而不是原始 CSV）。</summary>
+    public bool UsingSavedData => _usingSaved;
+
+    /// <summary>今天这台机器已经存了多少个时段。</summary>
+    public int SavedSlotCount => _savedDay != null ? _savedDay.FilledSlotCount : 0;
 
     void Awake()
     {
@@ -89,6 +112,45 @@ public sealed class MachineTimeController : MonoBehaviour
             _spindle = UnityEngine.Object.FindAnyObjectByType<SpindleReciprocate>();
         if (_drill == null)
             _drill = UnityEngine.Object.FindAnyObjectByType<DrillController>();
+        if (_session == null)
+            _session = UnityEngine.Object.FindAnyObjectByType<MachineSession>();
+    }
+
+    /// <summary>三台机器各自有独立的存档，所以要先问当前选的是哪台。</summary>
+    int ResolveMachineIndex()
+    {
+        if (_session != null)
+            return _session.CurrentIndex;
+
+        // 场景里没有 MachineSession 时，退化成“只有一台机器”。
+        return 0;
+    }
+
+    /// <summary>
+    /// 取出“今天 + 当前机器”的存档。只有日期 / 机器 / 存档版本变化时才重新查，
+    /// 所以每帧调用也只是一次字典命中。
+    /// </summary>
+    void RefreshSavedDay()
+    {
+        if (!preferSavedData)
+        {
+            _savedDay = null;
+            _savedValid = false;
+            return;
+        }
+
+        int machine = ResolveMachineIndex();
+        string date = MachineDayStore.Today;
+        int version = MachineDayStore.Version;
+
+        if (_savedValid && machine == _savedMachine && date == _savedDate && version == _savedVersion)
+            return;
+
+        _savedValid = true;
+        _savedMachine = machine;
+        _savedDate = date;
+        _savedVersion = version;
+        _savedDay = machine >= 0 ? MachineDayStore.Load(date, machine) : null;
     }
 
     void ApplyCurrentSlot()
@@ -112,6 +174,21 @@ public sealed class MachineTimeController : MonoBehaviour
         float worktable = Mathf.Lerp(a.worktableSpeedMms, b.worktableSpeedMms, t);
         float spindle = Mathf.Lerp(a.spindleReciprocatingSpeedMms, b.spindleReciprocatingSpeedMms, t);
         float drill = Mathf.Lerp(a.drillRpm, b.drillRpm, t);
+        string state = a.machineState;
+
+        // 关键改动：这个时段如果今天演示过并被保存下来，就用存档里的真实读数覆盖 CSV。
+        RefreshSavedDay();
+        MachineSavedSlot saved = _savedDay != null ? _savedDay.FindSlot(slot) : null;
+        _usingSaved = saved != null && saved.sampleCount > 0;
+
+        if (_usingSaved)
+        {
+            worktable = saved.worktableSpeedMms;
+            spindle = saved.spindleSpeedMms;
+            drill = saved.drillRpm;
+            if (!string.IsNullOrEmpty(saved.machineState))
+                state = saved.machineState;
+        }
 
         if (_platform != null && !_platform.IsSpeedManual)
             _platform.SetExternalSpeedMms(worktable);
@@ -121,7 +198,7 @@ public sealed class MachineTimeController : MonoBehaviour
             _drill.SetExternalRpm(drill);
 
         _currentSlot = slot;
-        _currentState = a.machineState;
+        _currentState = state;
     }
 
     bool AnyManual =>
@@ -202,6 +279,11 @@ public sealed class MachineTimeController : MonoBehaviour
         if (GUI.Button(new Rect(left + 186f, buttonY, 52f, 24f), "×60", _buttonStyle))
             minutesPerRealSecond = 60f;
 
+        string sourceText = (_usingSaved ? "数据源 本地存档" : "数据源 原始 CSV") +
+                            $" · 今日已存 {SavedSlotCount}/{MachineTimeData.SlotsPerDay} 段";
+        GUI.Label(new Rect(left, panel.yMax - 40f, contentWidth, 16f), sourceText,
+            _usingSaved ? _sourceStyle : _smallStyle);
+
         GUI.Label(new Rect(left, panel.yMax - 22f, contentWidth, 16f),
             "96 段 × 15 分钟 · 23:45 → 00:00 循环", _smallStyle);
     }
@@ -252,6 +334,12 @@ public sealed class MachineTimeController : MonoBehaviour
             fontStyle = FontStyle.Bold,
             normal = { textColor = new Color(1f, 0.75f, 0.3f) },
         };
+        _sourceStyle = new GUIStyle
+        {
+            fontSize = 11,
+            fontStyle = FontStyle.Bold,
+            normal = { textColor = new Color(0.45f, 1f, 0.65f) },
+        };
         _buttonStyle = new GUIStyle(GUI.skin.button) { fontSize = 11 };
 
         if (font != null)
@@ -261,6 +349,7 @@ public sealed class MachineTimeController : MonoBehaviour
             _labelStyle.font = font;
             _smallStyle.font = font;
             _manualStyle.font = font;
+            _sourceStyle.font = font;
             _buttonStyle.font = font;
         }
     }

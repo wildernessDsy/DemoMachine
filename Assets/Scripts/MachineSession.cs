@@ -103,6 +103,9 @@ public sealed class MachineSession : MonoBehaviour
         if (idx < 0 || idx >= machines.Length)
             return;
 
+        // 换机器之前先把上一台正在记录的数据写盘，避免丢最后几秒。
+        FlushRecorder();
+
         if (_current >= 0 && _current < machines.Length)
             Capture(_current, machines[_current]);
 
@@ -128,11 +131,20 @@ public sealed class MachineSession : MonoBehaviour
     [ContextMenu("回到选择界面")]
     public void ReturnToSelect()
     {
+        FlushRecorder();
+
         if (_current >= 0 && _current < machines.Length)
             Capture(_current, machines[_current]);
 
         _current = -1;
         EnterSelectMode();
+    }
+
+    /// <summary>把正在记录的当日参数立刻落盘。</summary>
+    static void FlushRecorder()
+    {
+        if (MachineDataRecorder.Instance != null)
+            MachineDataRecorder.Instance.FlushNow();
     }
 
     System.Collections.IEnumerator ResetWhenReady()

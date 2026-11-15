@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DemoMachine · 当日实时参数</title>
+<style>
+  :root {
+    --bg: #0a0c11;
+    --panel: #12151d;
+    --panel-2: #171b25;
+    --line: #232a38;
+    --text: #e6ecf5;
+    --muted: #8b96a8;
+    --accent: #73e6a6;
+    --accent-2: #6cc6ff;
+    --warn: #ffb45c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(1200px 600px at 20% -10%, #16202e 0%, var(--bg) 60%);
+    color: var(--text);
+    font: 14px/1.6 "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(10, 12, 17, 0.7);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  h1 { font-size: 17px; margin: 0; font-weight: 700; letter-spacing: .5px; }
+  h1 span { color: var(--accent); }
+  .grow { flex: 1 1 auto; }
+  input[type="text"] {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 7px 10px;
+    width: min(360px, 60vw);
+    font-family: inherit;
+    font-size: 13px;
+  }
+  input[type="text"]:focus { outline: 2px solid rgba(115, 230, 166, .35); border-color: var(--accent); }
+  button {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: .15s;
+  }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  button.primary { background: rgba(115, 230, 166, .12); border-color: rgba(115, 230, 166, .5); color: var(--accent); }
+
+  main { display: grid; grid-template-columns: 300px 1fr; gap: 18px; padding: 18px 24px 40px; align-items: start; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .panel h2 {
+    margin: 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: .6px;
+    border-bottom: 1px solid var(--line);
+    text-transform: uppercase;
+  }
+
+  .day-item { padding: 11px 16px; border-bottom: 1px solid var(--line); }
+  .day-item:last-child { border-bottom: 0; }
+  .day-date { font-weight: 700; letter-spacing: .4px; }
+  .day-machines { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+  .chip {
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .chip:hover { border-color: var(--accent-2); color: var(--accent-2); }
+  .chip.active { background: rgba(115, 230, 166, .14); border-color: rgba(115, 230, 166, .55); color: var(--accent); }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 720px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .stat .k { color: var(--muted); font-size: 12px; }
+  .stat .v { font-size: 21px; font-weight: 700; margin-top: 2px; }
+  .stat .v.green { color: var(--accent); }
+  .stat .v.blue { color: var(--accent-2); }
+
+  .table-wrap { max-height: calc(100vh - 330px); min-height: 240px; overflow: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #141822;
+    text-align: left;
+    padding: 10px 12px;
+    color: var(--muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody td { padding: 8px 12px; border-bottom: 1px solid rgba(35, 42, 56, .6); white-space: nowrap; }
+  tbody tr:hover { background: rgba(108, 198, 255, .05); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .bar { height: 5px; border-radius: 3px; background: var(--accent); opacity: .75; }
+  .bar.blue { background: var(--accent-2); }
+  .bar.orange { background: var(--warn); }
+  .bar-cell { width: 90px; }
+  .tag { font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .tag.manual { color: var(--warn); border-color: rgba(255, 180, 92, .45); }
+  .state { font-size: 12px; color: var(--muted); }
+  .state.running { color: var(--accent); }
+  .state.warmup { color: var(--warn); }
+  .state.maintenance { color: #ff8a8a; }
+
+  .empty { padding: 40px 20px; text-align: center; color: var(--muted); }
+  .hint { color: var(--muted); font-size: 12px; padding: 10px 16px; border-top: 1px solid var(--line); }
+  code { background: var(--panel-2); padding: 1px 6px; border-radius: 5px; color: var(--accent-2); font-size: 12px; }
+  .err { color: #ff9a9a; padding: 12px 16px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>DemoMachine <span>·</span> 当日实时参数</h1>
+  <div class="grow"></div>
+  <input id="api" type="text" spellcheck="false" placeholder="接口地址，例如 http://127.0.0.1:8787" />
+  <button id="reload" class="primary">刷新</button>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>有数据的日期</h2>
+    <div id="days"><div class="empty">加载中…</div></div>
+  </section>
+
+  <section>
+    <div class="stats" id="stats" style="display:none">
+      <div class="stat"><div class="k">已保存时段</div><div class="v green" id="s-slots">0</div></div>
+      <div class="stat"><div class="k">采样次数</div><div class="v" id="s-samples">0</div></div>
+      <div class="stat"><div class="k">累计演示</div><div class="v blue" id="s-run">0 秒</div></div>
+      <div class="stat"><div class="k">最后写入</div><div class="v" id="s-updated" style="font-size:14px">-</div></div>
+    </div>
+
+    <div class="panel">
+      <h2 id="detail-title">选择左侧的日期和机器</h2>
+      <div class="table-wrap" id="table-wrap">
+        <div class="empty">还没有选中数据</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var params = new URLSearchParams(location.search);
+  var apiInput = document.getElementById('api');
+  var daysBox = document.getElementById('days');
+  var tableWrap = document.getElementById('table-wrap');
+  var detailTitle = document.getElementById('detail-title');
+  var statsBox = document.getElementById('stats');
+
+  var api = (params.get('api') || params.get('apiBase') || '').replace(/\/+$/, '');
+  apiInput.value = api;
+
+  var state = { days: [], date: null, machine: null };
+
+  function apiUrl(path) {
+    return (api || location.origin) + path;
+  }
+
+  function stateLabel(value) {
+    var map = { idle: '待机', warmup: '升温', running: '加工', paused: '暂停', maintenance: '维护' };
+    return map[value] || value || '-';
+  }
+
+  function barWidth(value, max) {
+    var pct = max > 0 ? Math.max(2, Math.min(100, (value / max) * 100)) : 2;
+    return pct.toFixed(1) + '%';
+  }
+
+  function fmtDuration(seconds) {
+    var s = Math.round(Number(seconds) || 0);
+    if (s < 60) return s + ' 秒';
+    return Math.floor(s / 60) + ' 分 ' + (s % 60) + ' 秒';
+  }
+
+  function loadDays() {
+    daysBox.innerHTML = '<div class="empty">加载中…</div>';
+
+    fetch(apiUrl('/api/days'))
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        state.days = (data && data.days) || [];
+        renderDays();
+
+        if (state.days.length > 0 && !state.date) {
+          var first = state.days[0];
+          if (first.machines.length > 0) {
+            select(first.date, first.machines[0].machineIndex);
+          }
+        }
+      })
+      .catch(function (err) {
+        daysBox.innerHTML = '<div class="err">读取失败：' + err.message +
+          '<br>检查接口地址，或先执行 <code>node server/index.js</code>。</div>';
+      });
+  }
+
+  function renderDays() {
+    if (state.days.length === 0) {
+      daysBox.innerHTML = '<div class="empty">接口连上了，但还没有任何存档。<br>去演示网站跑一会儿，数据就会出现在这里。</div>';
+      return;
+    }
+
+    var html = '';
+    state.days.forEach(function (day) {
+      html += '<div class="day-item"><div class="day-date">' + day.date + '</div><div class="day-machines">';
+      day.machines.forEach(function (machine) {
+        var active = day.date === state.date && machine.machineIndex === state.machine;
+        html += '<button class="chip' + (active ? ' active' : '') + '"' +
+          ' data-date="' + day.date + '" data-machine="' + machine.machineIndex + '">' +
+          machine.machineName + ' · ' + machine.filledSlots + ' 段</button>';
+      });
+      html += '</div></div>';
+    });
+    daysBox.innerHTML = html;
+
+    Array.prototype.forEach.call(daysBox.querySelectorAll('.chip'), function (chip) {
+      chip.addEventListener('click', function () {
+        select(chip.getAttribute('data-date'), Number(chip.getAttribute('data-machine')));
+      });
+    });
+  }
+
+  function select(date, machine) {
+    state.date = date;
+    state.machine = machine;
+    renderDays();
+
+    detailTitle.textContent = date + ' · 机器 ' + (machine + 1);
+    tableWrap.innerHTML = '<div class="empty">加载中…</div>';
+
+    fetch(apiUrl('/api/day?date=' + encodeURIComponent(date) + '&machine=' + machine))
+      .then(function (res) { return res.json(); })
+      .then(function (day) {
+        if (!day || !day.slots) {
+          tableWrap.innerHTML = '<div class="empty">这台机器这一天没有数据。</div>';
+          return;
+        }
+        renderDay(day);
+      })
+      .catch(function (err) {
+        tableWrap.innerHTML = '<div class="err">读取失败：' + err.message + '</div>';
+      });
+  }
+
+  function renderDay(day) {
+    var slots = day.slots.filter(function (slot) { return slot.sampleCount > 0; });
+
+    statsBox.style.display = '';
+    document.getElementById('s-slots').textContent = slots.length + ' / 96';
+    document.getElementById('s-samples').textContent = String(day.sampleCount || 0);
+    document.getElementById('s-run').textContent = fmtDuration(day.runSeconds);
+    document.getElementById('s-updated').textContent = day.updatedAt || '-';
+
+    if (slots.length === 0) {
+      tableWrap.innerHTML = '<div class="empty">这一天还没有采样。</div>';
+      return;
+    }
+
+    var maxWorktable = Math.max.apply(null, slots.map(function (s) { return s.worktableSpeedMms; }));
+    var maxSpindle = Math.max.apply(null, slots.map(function (s) { return s.spindleSpeedMms; }));
+    var maxDrill = Math.max.apply(null, slots.map(function (s) { return s.drillRpm; }));
+
+    var html = '<table><thead><tr>' +
+      '<th>时段</th>' +
+      '<th>工作台 mm/s</th><th></th>' +
+      '<th>主轴往复 mm/s</th><th></th>' +
+      '<th>钻头 RPM</th><th></th>' +
+      '<th>状态</th><th>采样</th><th>更新</th>' +
+      '</tr></thead><tbody>';
+
+    slots.forEach(function (slot) {
+      html += '<tr>' +
+        '<td>' + slot.timeSlot + '</td>' +
+        '<td class="num">' + slot.worktableSpeedMms.toFixed(1) + '</td>' +
+        '<td class="bar-cell"><div class="bar" style="width:' + barWidth(slot.worktableSpeedMms, maxWorktable) + '"></div></td>' +
+        '<td class="num">' + slot.spindleSpeedMms.toFixed(1) + '</td>' +
+        '<td class="bar-cell"><div class="bar blue" style="width:' + barWidth(slot.spindleSpeedMms, maxSpindle) + '"></div></td>' +
+        '<td class="num">' + slot.drillRpm.toFixed(1) + '</td>' +
+        '<td class="bar-cell"><div class="bar orange" style="width:' + barWidth(slot.drillRpm, maxDrill) + '"></div></td>' +
+        '<td class="state ' + slot.machineState + '">' + stateLabel(slot.machineState) +
+        (slot.manual ? ' <span class="tag manual">手动</span>' : '') + '</td>' +
+        '<td class="num">' + slot.sampleCount + '</td>' +
+        '<td class="state">' + (slot.updatedAt || '-') + '</td>' +
+        '</tr>';
+    });
+
+    html += '</tbody></table>';
+    tableWrap.innerHTML = html;
+  }
+
+  document.getElementById('reload').addEventListener('click', function () {
+    api = apiInput.value.trim().replace(/\/+$/, '');
+    state.date = null;
+    state.machine = null;
+    loadDays();
+  });
+
+  apiInput.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      document.getElementById('reload').click();
+    }
+  });
+
+  loadDays();
+})();
+</script>
+</body>
+</html>

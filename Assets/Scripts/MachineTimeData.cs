@@ -111,4 +111,19 @@ public static class MachineTimeData
         Debug.Log($"[MachineTimeData] 已加载 {count} 条时段数据：{sourcePath}");
         return slots;
     }
+
+    /// <summary>把 slotIndex（0..95）换算成 "HH:mm"。</summary>
+    public static string SlotLabel(int slotIndex)
+    {
+        int slot = Mathf.Clamp(slotIndex, 0, SlotsPerDay - 1);
+        int minutes = slot * SlotMinutes;
+        return string.Format(CultureInfo.InvariantCulture, "{0:00}:{1:00}", minutes / 60, minutes % 60);
+    }
+
+    /// <summary>把“0 点起的分钟数”换算成 slotIndex（0..95）。</summary>
+    public static int SlotIndexOf(float minutesSinceMidnight)
+    {
+        int slot = Mathf.FloorToInt(minutesSinceMidnight / SlotMinutes);
+        return Mathf.Clamp(slot, 0, SlotsPerDay - 1);
+    }
 }
