@@ -425,7 +425,7 @@ public sealed class FirstPersonCamera : MonoBehaviour
         var rect = new Rect(16f, 12f, textWidth + padX * 2f, size.y + padY * 2f);
 
         Color old = GUI.color;
-        GUI.color = new Color(0f, 0f, 0f, 0.45f);
+        GUI.color = new Color(0f, 0f, 0f, 0.72f);
         GUI.DrawTexture(rect, Texture2D.whiteTexture);
         GUI.color = old;
 
@@ -446,7 +446,7 @@ public sealed class FirstPersonCamera : MonoBehaviour
         _hintStyle = new GUIStyle(GUI.skin.label)
         {
             fontSize = Mathf.Clamp(Mathf.RoundToInt(Screen.height * 0.016f), 11, 16),
-            normal = { textColor = new Color(1f, 1f, 1f, 0.9f) }
+            normal = { textColor = Color.white }
         };
         if (_cjkFont != null)
             _hintStyle.font = _cjkFont;

@@ -525,20 +525,20 @@ public sealed class SpindleReciprocate : MonoBehaviour
         {
             fontSize = 34,
             fontStyle = FontStyle.Bold,
-            normal = { textColor = new Color(0.45f, 1f, 0.65f) }
+            normal = { textColor = Color.white }
         };
 
         _labelStyle = new GUIStyle(GUI.skin.label)
         {
             fontSize = 14,
-            normal = { textColor = new Color(0.85f, 0.9f, 0.95f) }
+            normal = { textColor = Color.white }
         };
 
         _smallStyle = new GUIStyle(GUI.skin.label)
         {
             fontSize = 12,
             alignment = TextAnchor.MiddleLeft,
-            normal = { textColor = new Color(0.65f, 0.7f, 0.78f) }
+            normal = { textColor = Color.white }
         };
 
         _smallRightStyle = new GUIStyle(_smallStyle)
@@ -551,6 +551,9 @@ public sealed class SpindleReciprocate : MonoBehaviour
             fontSize = 20,
             alignment = TextAnchor.MiddleCenter
         };
+        _closeStyle.normal.textColor = Color.white;
+        _closeStyle.hover.textColor = Color.white;
+        _closeStyle.active.textColor = Color.white;
 
         Font font = GetCjkFont();
         if (font != null)

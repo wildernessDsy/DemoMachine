@@ -29,6 +29,8 @@ public sealed class MachineTimeController : MonoBehaviour
     PlatformController _platform;
     SpindleReciprocate _spindle;
     DrillController _drill;
+    FiveAxisPose _pose;
+    CuttingParameters _cutting;
 
     GUIStyle _panelStyle;
     GUIStyle _titleStyle;
@@ -45,6 +47,19 @@ public sealed class MachineTimeController : MonoBehaviour
     public float CurrentMinutes => _minutes;
     public int CurrentSlot => _currentSlot;
     public bool IsPaused => _paused;
+
+    /// <summary>当前时段的状态键：idle / warmup / running / paused / maintenance。</summary>
+    public string CurrentStateKey => _currentState;
+
+    /// <summary>当前时段的中文状态名。</summary>
+    public string CurrentStateChinese => StateChinese(_currentState);
+
+    /// <summary>是否处于真正在切削的状态。</summary>
+    public bool IsMachining => _currentState == "running";
+
+    /// <summary>当前时段的完整数据（可能为 null）。</summary>
+    public MachineTimeSlot CurrentSlotData =>
+        (_slots != null && _currentSlot >= 0 && _currentSlot < _slots.Length) ? _slots[_currentSlot] : null;
 
     void Awake()
     {
@@ -89,6 +104,10 @@ public sealed class MachineTimeController : MonoBehaviour
             _spindle = UnityEngine.Object.FindAnyObjectByType<SpindleReciprocate>();
         if (_drill == null)
             _drill = UnityEngine.Object.FindAnyObjectByType<DrillController>();
+        if (_pose == null)
+            _pose = UnityEngine.Object.FindAnyObjectByType<FiveAxisPose>();
+        if (_cutting == null)
+            _cutting = UnityEngine.Object.FindAnyObjectByType<CuttingParameters>();
     }
 
     void ApplyCurrentSlot()
@@ -112,22 +131,38 @@ public sealed class MachineTimeController : MonoBehaviour
         float worktable = Mathf.Lerp(a.worktableSpeedMms, b.worktableSpeedMms, t);
         float spindle = Mathf.Lerp(a.spindleReciprocatingSpeedMms, b.spindleReciprocatingSpeedMms, t);
         float drill = Mathf.Lerp(a.drillRpm, b.drillRpm, t);
+        float aAxis = Mathf.Lerp(a.aAxisDeg, b.aAxisDeg, t);
+        float cAxis = Mathf.Lerp(a.cAxisDeg, b.cAxisDeg, t);
+        float spindleSpeed = Mathf.Lerp(a.spindleSpeedRpm, b.spindleSpeedRpm, t);
+        float feedRate = Mathf.Lerp(a.feedRateMmpm, b.feedRateMmpm, t);
+        float cutDepth = Mathf.Lerp(a.cutDepthMm, b.cutDepthMm, t);
+        float cutWidth = Mathf.Lerp(a.cutWidthMm, b.cutWidthMm, t);
+        int tool = t < 0.5f ? a.toolNumber : b.toolNumber;
 
         if (_platform != null && !_platform.IsSpeedManual)
             _platform.SetExternalSpeedMms(worktable);
         if (_spindle != null && !_spindle.IsSpeedManual)
             _spindle.SetExternalSpeedMms(spindle);
-        if (_drill != null && !_drill.IsRpmManual)
+        if (_drill != null && !_drill.IsRpmManual && _cutting == null)
             _drill.SetExternalRpm(drill);
+        if (_pose != null)
+            _pose.SetExternalPose(aAxis, cAxis);
+        if (_cutting != null)
+            _cutting.SetExternal(spindleSpeed, feedRate, cutDepth, cutWidth, tool);
 
         _currentSlot = slot;
         _currentState = a.machineState;
+
+        if (_cutting != null)
+            _cutting.machineStateKey = _currentState;
     }
 
     bool AnyManual =>
         (_platform != null && _platform.IsSpeedManual) ||
         (_spindle != null && _spindle.IsSpeedManual) ||
-        (_drill != null && _drill.IsRpmManual);
+        (_drill != null && _drill.IsRpmManual) ||
+        (_pose != null && _pose.IsManual) ||
+        (_cutting != null && _cutting.IsManual);
 
     string FormatTime(float minutes)
     {
@@ -155,7 +190,7 @@ public sealed class MachineTimeController : MonoBehaviour
         EnsureStyles();
 
         const float width = 430f;
-        const float height = 290f;
+        const float height = 320f;
         var panel = new Rect(16f, Screen.height - height - 16f, width, height);
         {
             Color boxColor = GUI.color;
@@ -202,8 +237,56 @@ public sealed class MachineTimeController : MonoBehaviour
         if (GUI.Button(new Rect(left + 186f, buttonY, 52f, 24f), "×60", _buttonStyle))
             minutesPerRealSecond = 60f;
 
-        GUI.Label(new Rect(left, panel.yMax - 22f, contentWidth, 16f),
+        // ---------------- 五轴姿态 ----------------
+        float poseY = top + 126f;
+        GUI.Label(new Rect(left, poseY, contentWidth, 18f), "五轴姿态 / A·C 回转", _titleStyle);
+        poseY += 22f;
+
+        if (_pose != null && _pose.IsReady)
+        {
+            float aNow = _pose.TargetADeg;
+            float cNow = _pose.TargetCDeg;
+
+            poseY = DrawPoseAxis(left, poseY, contentWidth, "A 轴", aNow, _pose.aRange, true);
+            poseY = DrawPoseAxis(left, poseY, contentWidth, "C 轴", cNow, _pose.cRange, false);
+
+            _pose.ReadPose(out _, out Vector3 tcpTableMm, out Vector3 toolVector);
+
+            GUI.Label(new Rect(left, poseY, contentWidth, 16f),
+                $"刀尖 · 台面坐标  X {tcpTableMm.x:+0.0;-0.0;0}  Y {tcpTableMm.y:+0.0;-0.0;0}  Z {tcpTableMm.z:+0.0;-0.0;0} mm",
+                _smallStyle);
+            poseY += 18f;
+
+            GUI.Label(new Rect(left, poseY, contentWidth, 16f),
+                $"刀具矢量  i {toolVector.x:+0.00;-0.00;0.00}  j {toolVector.y:+0.00;-0.00;0.00}  k {toolVector.z:+0.00;-0.00;0.00}",
+                _smallStyle);
+
+            if (_pose.CTableOwnedByOther)
+                GUI.Label(new Rect(left, poseY + 16f, contentWidth, 16f), "托盘演示中 · C 轴由托盘效果接管", _manualStyle);
+        }
+        else
+        {
+            GUI.Label(new Rect(left, poseY, contentWidth, 16f), "未找到 FiveAxisPose", _manualStyle);
+        }
+
+        GUI.Label(new Rect(left, panel.yMax - 20f, contentWidth, 16f),
             "96 段 × 15 分钟 · 23:45 → 00:00 循环", _smallStyle);
+    }
+
+    /// <summary>拖动 A/C 滑块写入手动姿态，8 秒内优先于数据库。</summary>
+    float DrawPoseAxis(float left, float y, float width, string label, float value, Vector2 range, bool isA)
+    {
+        GUI.Label(new Rect(left, y, width, 16f), $"{label}   {value:+0.0;-0.0;0}°", _labelStyle);
+        float next = GUI.HorizontalSlider(new Rect(left, y + 16f, width, 12f), value, range.x, range.y);
+
+        if (Mathf.Abs(next - value) > 1e-4f)
+        {
+            float a = isA ? next : _pose.TargetADeg;
+            float c = isA ? _pose.TargetCDeg : next;
+            _pose.SetManualPose(a, c);
+        }
+
+        return y + 34f;
     }
 
     void EnsureStyles()
@@ -228,31 +311,34 @@ public sealed class MachineTimeController : MonoBehaviour
         {
             fontSize = 14,
             fontStyle = FontStyle.Bold,
-            normal = { textColor = new Color(0.85f, 0.9f, 1f) },
+            normal = { textColor = Color.white },
         };
         _timeStyle = new GUIStyle
         {
             fontSize = 30,
             fontStyle = FontStyle.Bold,
-            normal = { textColor = new Color(0.55f, 0.9f, 1f) },
+            normal = { textColor = Color.white },
         };
         _labelStyle = new GUIStyle
         {
             fontSize = 12,
-            normal = { textColor = new Color(0.72f, 0.78f, 0.86f) },
+            normal = { textColor = Color.white },
         };
         _smallStyle = new GUIStyle
         {
             fontSize = 11,
-            normal = { textColor = new Color(0.65f, 0.72f, 0.8f) },
+            normal = { textColor = Color.white },
         };
         _manualStyle = new GUIStyle
         {
             fontSize = 11,
             fontStyle = FontStyle.Bold,
-            normal = { textColor = new Color(1f, 0.75f, 0.3f) },
+            normal = { textColor = Color.white },
         };
         _buttonStyle = new GUIStyle(GUI.skin.button) { fontSize = 11 };
+        _buttonStyle.normal.textColor = Color.white;
+        _buttonStyle.hover.textColor = Color.white;
+        _buttonStyle.active.textColor = Color.white;
 
         if (font != null)
         {

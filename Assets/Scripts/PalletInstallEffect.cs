@@ -118,6 +118,9 @@ public sealed class PalletInstallEffect : MonoBehaviour
     public GameObject Pallet => _palletRoot;
     public float TableAngle => _tableAngle;
 
+    /// <summary>托盘效果是否正在自转 C 轴（此时其他组件不应再写 C 轴）。</summary>
+    public bool IsTableRunning => _tableRunning;
+
     void Awake()
     {
         ResolveTable();

@@ -9,7 +9,8 @@ using UnityEngine.InputSystem;
 /// 1) 目标列表里的部件同步平动（局部坐标），红色碗和转台一起走；
 /// 2) 运行时自动生成一根灰色支撑柱，柱底固定、柱顶贴着碗底，
 ///    平台上升时柱子跟着“伸长”，看起来就是柱子把碗顶起来；
-/// 3) 面板默认常显在右上角，进 Play 就能看到数据，不需要点碗；
+/// 3) 面板默认隐藏，按 P（togglePanelKey）或用鼠标左键点红色碗即可显示；
+///    Esc 关闭面板，勾选 openPanelOnStart 可改成进 Play 就常显；
 /// 4) 不再调用相机特写，所以 F / ↑↓←→ 随时可以自由移动视角；
 /// 5) 默认开启自动往复演示，进 Play 碗就自己动。
 /// </summary>
@@ -48,8 +49,10 @@ public sealed class PlatformController : MonoBehaviour
 
     [Header("面板")]
     public string panelTitle = "工作台运动参数";
-    [Tooltip("勾上则进 Play 就显示面板；默认关闭，点红色碗才出现。")]
+    [Tooltip("勾上则进 Play 就显示面板；默认关闭，点红色碗或按快捷键才出现。")]
     public bool openPanelOnStart = false;
+    [Tooltip("开关参数面板的快捷键。鼠标左键点红色碗也可以切换。")]
+    public Key togglePanelKey = Key.P;
     public float clickPadding = 0.03f;
 
     [Header("默认状态")]
@@ -274,7 +277,11 @@ public sealed class PlatformController : MonoBehaviour
 
         HandleClick();
 
-        if (_panelOpen && Keyboard.current != null && Keyboard.current[Key.Escape].wasPressedThisFrame)
+        var keyboard = Keyboard.current;
+        if (keyboard != null && keyboard[togglePanelKey].wasPressedThisFrame)
+            _panelOpen = !_panelOpen;
+
+        if (_panelOpen && keyboard != null && keyboard[Key.Escape].wasPressedThisFrame)
             _panelOpen = false;
 
         if (autoDemo)
@@ -478,7 +485,7 @@ public sealed class PlatformController : MonoBehaviour
             ResetToBase();
 
         GUI.Label(new Rect(left, panel.yMax - 22f, contentWidth, 18f),
-            "F 视角模式 · Esc 关面板", _smallStyle);
+            $"{togglePanelKey} 开关面板 · Esc 关闭 · F 视角模式", _smallStyle);
     }
 
     /// <summary>拖动任一轴滑块时自动退出演示模式，避免和自动轨迹打架。</summary>
@@ -515,23 +522,26 @@ public sealed class PlatformController : MonoBehaviour
         _labelStyle = new GUIStyle(GUI.skin.label)
         {
             fontSize = 12,
-            normal = { textColor = new Color(0.85f, 0.9f, 0.95f) }
+            normal = { textColor = Color.white }
         };
 
         _valueStyle = new GUIStyle(GUI.skin.label)
         {
             fontSize = 13,
             fontStyle = FontStyle.Bold,
-            normal = { textColor = new Color(0.45f, 1f, 0.65f) }
+            normal = { textColor = Color.white }
         };
 
         _smallStyle = new GUIStyle(GUI.skin.label)
         {
             fontSize = 11,
-            normal = { textColor = new Color(0.65f, 0.7f, 0.78f) }
+            normal = { textColor = Color.white }
         };
 
         _closeStyle = new GUIStyle(GUI.skin.button) { fontSize = 16, alignment = TextAnchor.MiddleCenter };
+        _closeStyle.normal.textColor = Color.white;
+        _closeStyle.hover.textColor = Color.white;
+        _closeStyle.active.textColor = Color.white;
 
         Font font = GetCjkFont();
         _buttonStyle = new GUIStyle(GUI.skin.button)
@@ -539,7 +549,7 @@ public sealed class PlatformController : MonoBehaviour
             fontSize = 13,
             alignment = TextAnchor.MiddleCenter
         };
-        Color btnText = new Color(0.92f, 0.95f, 1f);
+        Color btnText = Color.white;
         _buttonStyle.normal.textColor = btnText;
         _buttonStyle.hover.textColor = Color.white;
         _buttonStyle.active.textColor = Color.white;

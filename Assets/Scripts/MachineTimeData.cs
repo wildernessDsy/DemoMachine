@@ -14,6 +14,30 @@ public sealed class MachineTimeSlot
     public float spindleReciprocatingSpeedMms;
     public float drillRpm;
     public string machineState;
+
+    /// <summary>A 轴角度（度）。旧版 CSV 没有该列时按 0 处理。</summary>
+    public float aAxisDeg;
+
+    /// <summary>C 轴角度（度）。旧版 CSV 没有该列时按 0 处理。</summary>
+    public float cAxisDeg;
+
+    /// <summary>主轴转速 S（rpm）。</summary>
+    public float spindleSpeedRpm;
+
+    /// <summary>进给速度 F（mm/min）。</summary>
+    public float feedRateMmpm;
+
+    /// <summary>切削深度 ap（mm）。</summary>
+    public float cutDepthMm;
+
+    /// <summary>切削宽度 ae（mm）。</summary>
+    public float cutWidthMm;
+
+    /// <summary>刀号 T。</summary>
+    public int toolNumber = 1;
+
+    /// <summary>单件理想循环时间（秒），来自加工程序。</summary>
+    public float cycleTimeSeconds = 150f;
 }
 
 /// <summary>
@@ -73,6 +97,14 @@ public static class MachineTimeData
                     spindleReciprocatingSpeedMms = float.Parse(parts[4], CultureInfo.InvariantCulture),
                     drillRpm = float.Parse(parts[5], CultureInfo.InvariantCulture),
                     machineState = parts[6],
+                    aAxisDeg = parts.Length >= 9 ? float.Parse(parts[7], CultureInfo.InvariantCulture) : 0f,
+                    cAxisDeg = parts.Length >= 9 ? float.Parse(parts[8], CultureInfo.InvariantCulture) : 0f,
+                    spindleSpeedRpm = parts.Length >= 14 ? float.Parse(parts[9], CultureInfo.InvariantCulture) : 0f,
+                    feedRateMmpm = parts.Length >= 14 ? float.Parse(parts[10], CultureInfo.InvariantCulture) : 0f,
+                    cutDepthMm = parts.Length >= 14 ? float.Parse(parts[11], CultureInfo.InvariantCulture) : 0f,
+                    cutWidthMm = parts.Length >= 14 ? float.Parse(parts[12], CultureInfo.InvariantCulture) : 0f,
+                    toolNumber = parts.Length >= 14 ? int.Parse(parts[13], CultureInfo.InvariantCulture) : 1,
+                    cycleTimeSeconds = parts.Length >= 15 ? float.Parse(parts[14], CultureInfo.InvariantCulture) : 150f,
                 };
 
                 if (slot.slotIndex >= 0 && slot.slotIndex < SlotsPerDay)

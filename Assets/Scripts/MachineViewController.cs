@@ -581,11 +581,11 @@ public sealed class MachineViewController : MonoBehaviour
         var rect = new Rect(16f, 12f, textSize.x + padX * 2f, textSize.y + padY * 2f);
 
         var oldColor = GUI.color;
-        GUI.color = new Color(0f, 0f, 0f, 0.4f);
+        GUI.color = new Color(0f, 0f, 0f, 0.72f);
         GUI.DrawTexture(rect, Texture2D.whiteTexture);
         GUI.color = oldColor;
 
-        _hintStyle.normal.textColor = _viewMode ? new Color(0.55f, 1f, 0.65f) : new Color(1f, 1f, 1f, 0.9f);
+        _hintStyle.normal.textColor = Color.white;
 
         var textRect = new Rect(rect.x + padX, rect.y + padY, textSize.x, textSize.y);
         GUI.Label(textRect, content, _hintStyle);

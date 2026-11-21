@@ -92,7 +92,7 @@ public sealed class PauseMenu : MonoBehaviour
         _title.normal.textColor = Color.white;
 
         _hint = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
-        _hint.normal.textColor = new Color(0.75f, 0.8f, 0.86f);
+        _hint.normal.textColor = Color.white;
 
         _button = new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleCenter };
         _button.normal.textColor = new Color(0.1f, 0.12f, 0.16f);
